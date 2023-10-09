@@ -2,9 +2,8 @@ import express, { Request, Response } from 'express';
 
 const app = express();
 
-
-app.get('/home', (req: Request, res: Response) => {
-  res.send('welcome!');
+app.get('/', (req: Request, res: Response) => {
+  res.sendStatus(418);
 });
 
 app.listen('8080', () => {
