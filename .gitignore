@@ -4,3 +4,6 @@ node_modules
 
 # IDE extentions
 .idea
+
+# 환경 변수
+.env
