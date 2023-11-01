@@ -4,7 +4,7 @@ import helloRoute from '../src/route/hello'
 import dbtestRoute from '../src/route/dbtest'
 
 dotenv.config()
-var db = require('../config/connection')
+
 
 const app = express();
 app.use('/hello', helloRoute)
@@ -14,5 +14,6 @@ app.get('/', (req: Request, res: Response) => {
 });
 
 app.listen('8080', () => {
+  console.log(process.env.user);
   console.log(`8080 port is lintening.`);
 });
