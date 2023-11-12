@@ -1,19 +1,20 @@
 import express, { Request, Response } from 'express';
-import dotenv from 'dotenv'
+import dotenv from 'dotenv';
 import helloRoute from '../src/route/hello'
 import dbtestRoute from '../src/route/dbtest'
+import signInRoute from '../src/route/signin'
 
-dotenv.config()
-
+dotenv.config();
 
 const app = express();
 app.use('/hello', helloRoute)
 app.use('/dbtest', dbtestRoute)
+app.use('/signin', signInRoute);
 app.get('/', (req: Request, res: Response) => {
   res.sendStatus(418);
 });
 
 app.listen('8080', () => {
-  console.log(process.env.user);
+  console.log(process.env.DB_HOST);
   console.log(`8080 port is lintening.`);
 });
