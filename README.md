@@ -14,6 +14,11 @@ none
 ## POST /signin
 사용자 입력을 받아서 회원가입 처리하는 엔드포인트
 ### Request
+header에 origin을 담아서 보낸다.
+|Name|Type|Description|
+|:---|:---|:---|
+|Origin|`string`|현재 도메인|
+
 body에 사용자 정보를 담아서 보낸다.   
 |Name|Type|Description|
 |:---|:---|:---|
