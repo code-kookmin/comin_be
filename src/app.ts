@@ -1,15 +1,17 @@
 import express, { Request, Response } from 'express';
 import dotenv from 'dotenv';
-import helloRoute from '../src/route/hello'
-import dbtestRoute from '../src/route/dbtest'
 import signInRoute from '../src/route/signin'
+import WeeklyProblemRoute from "./route/weeklyProblem";
 
 dotenv.config();
 
 const app = express();
-app.use('/hello', helloRoute)
-app.use('/dbtest', dbtestRoute)
 app.use('/signin', signInRoute);
+
+app.use(express.json());
+
+app.use("/weekly-problem", WeeklyProblemRoute);
+
 app.get('/', (req: Request, res: Response) => {
   res.sendStatus(418);
 });
