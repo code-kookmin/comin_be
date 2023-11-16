@@ -4,10 +4,10 @@ import dotenv from 'dotenv'
 dotenv.config();
 
 export default mysql2.createPool({
-  host: process.env.host,
-  port: parseInt(process.env.port as string),
-  user: process.env.user,
-  password: process.env.password,
-  database: process.env.database
+  host: process.env.DB_HOST,
+  port: parseInt(process.env.DB_PORT as string),
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_DATABASE
 });
 
