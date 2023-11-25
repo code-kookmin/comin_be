@@ -3,7 +3,7 @@ import dotenv from 'dotenv'
 import helloRoute from '../src/route/hello'
 import signInRoute from '../src/route/signin'
 import WeeklyProblemRoute from "./route/weeklyProblem";
-import morgan from "morgan";
+import morgan from 'morgan';
 
 
 dotenv.config();
