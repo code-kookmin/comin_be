@@ -1,10 +1,11 @@
 import express, { Request, Response } from 'express';
 import dotenv from 'dotenv';
 import helloRoute from '../src/route/hello';
-import signInRoute from '../src/route/signIn';
+import signInRoute from '../src/route/signin';
 import WeeklyProblemRoute from './route/weeklyProblem';
 import findPasswordRoute from './route/findPassword';
 import editProfileRoute from './route/editProfile';
+import communityRoute from './route/community';
 import morgan from 'morgan';
 import cors from 'cors';
 
@@ -21,6 +22,7 @@ app.use('/weekly-problem', WeeklyProblemRoute);
 app.use('/signin', signInRoute);
 app.use('/findPassword', findPasswordRoute);
 app.use('/editProfile', editProfileRoute);
+app.use('/community', communityRoute);
 app.get('/', (req: Request, res: Response) => {
   res.sendStatus(418);
 });
