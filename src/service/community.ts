@@ -17,6 +17,7 @@ async function save(title: string, category: string, content: string) {
 async function findById(id: number) {
   try {
     const result = await communityRepository.findById(id);
+
     if (result === undefined) return undefined;
     return result;
   } catch (err) {
