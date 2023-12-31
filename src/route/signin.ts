@@ -1,6 +1,6 @@
 import express from 'express';
 import { User, isUser } from '../domain/user';
-import signinService from '../service/signIn';
+import signinService from '../service/signin';
 
 const route = express.Router();
 

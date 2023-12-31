@@ -1,6 +1,6 @@
 export interface Communtiy {
-  user_id: number;
-  category_id: number;
+  userId: number;
+  categoryId: number;
   title: string;
   content: string;
   like: number;
@@ -8,8 +8,8 @@ export interface Communtiy {
 
 export function isCommuntiy(obj: Communtiy) {
   if (
-    typeof obj.category_id !== 'number' ||
-    typeof obj.user_id !== 'number' ||
+    typeof obj.categoryId !== 'number' ||
+    typeof obj.userId !== 'number' ||
     typeof obj.title !== 'string' ||
     typeof obj.content !== 'string' ||
     typeof obj.like !== 'number'
