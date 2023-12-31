@@ -8,6 +8,7 @@ import editProfileRoute from './route/editProfile';
 import communityRoute from './route/community';
 import morgan from 'morgan';
 import cors from 'cors';
+import {TspecDocsMiddleware} from "tspec";
 
 dotenv.config();
 
@@ -27,6 +28,8 @@ app.use('/community', communityRoute);
 app.get('/', (req: Request, res: Response) => {
   res.sendStatus(418);
 });
+
+app.use("/docs", await TspecDocsMiddleware());
 
 app.listen('8080', () => {
   console.log(process.env.DB_HOST);
