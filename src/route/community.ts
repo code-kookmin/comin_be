@@ -3,12 +3,11 @@ import communityService from '../service/community';
 
 const route = express.Router();
 
-route.get('/findById', async (req, res) => {
-  const id = parseInt(req.query.id as string);
-  if (typeof id !== 'number') return res.sendStatus(400);
+route.get('/:id', async (req, res) => {
+  if (isNaN(parseInt(req.params.id))) return res.sendStatus(400);
   try {
-    const result = await communityService.findById(id);
-    if (result === undefined) return res.sendStatus(400);
+    const result = await communityService.findById(parseInt(req.params.id));
+    if (!result) return res.sendStatus(400);
     return res.send(result);
   } catch (err) {
     console.log(err);
@@ -16,7 +15,7 @@ route.get('/findById', async (req, res) => {
   }
 });
 
-route.post('/save', async (req, res) => {
+route.post('/', async (req, res) => {
   const { title, category, content } = req.body;
   if (
     typeof title !== 'string' ||
@@ -34,7 +33,7 @@ route.post('/save', async (req, res) => {
   }
 });
 
-route.delete('/delete', async (req, res) => {
+route.delete('/', async (req, res) => {
   const id = req.body.id;
   if (typeof id !== 'number') return res.sendStatus(400);
   try {
@@ -47,7 +46,7 @@ route.delete('/delete', async (req, res) => {
   }
 });
 
-route.post('/update', async (req, res) => {
+route.put('/:id', async (req, res) => {
   const { id, title, content } = req.body;
   if (
     typeof id !== 'number' ||

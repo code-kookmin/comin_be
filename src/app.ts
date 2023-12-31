@@ -17,6 +17,7 @@ app.use(express.json());
 app.use(morgan('dev'));
 app.use(cors({ origin: process.env.ALLOWED_DOMAIN }));
 app.use(express.urlencoded({ extended: true }));
+
 app.use('/weekly-problem', WeeklyProblemRoute);
 
 app.use('/signin', signInRoute);
