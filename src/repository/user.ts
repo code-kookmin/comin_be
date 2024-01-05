@@ -58,6 +58,7 @@ async function update(user: User) {
   try {
     const [result, info]: [ResultSetHeader, FieldPacket[]] =
       await connection.query(updateQuery, updateQueryParam);
+    console.log(result);
     return result.affectedRows;
   } catch (err) {
     console.log(err);

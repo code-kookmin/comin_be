@@ -1,3 +1,5 @@
+import { Tspec } from 'tspec';
+
 export interface Communtiy {
   userId: number;
   categoryId: number;
@@ -17,3 +19,41 @@ export function isCommuntiy(obj: Communtiy) {
     return false;
   return true;
 }
+
+export type CommuntiyApiTspec = Tspec.DefineApiSpec<{
+  tags: ['Community'];
+  paths: {
+    '/community/{id}': {
+      get: {
+        summary: '게시물 조회';
+        path: { id: number };
+        responses: { 200: Communtiy };
+      };
+      delete: {
+        summary: '게시물 삭제';
+        path: { id: number };
+        responses: { 200: string };
+      };
+      put: {
+        summary: '게시물 수정';
+        path: { id: number };
+        body: {
+          title: string;
+          content: string;
+        };
+        responses: { 200: string };
+      };
+    };
+    '/community': {
+      post: {
+        summary: '게시물 생성';
+        body: {
+          category: string;
+          title: string;
+          content: string;
+        };
+        responses: { 200: string };
+      };
+    };
+  };
+}>;

@@ -14,6 +14,12 @@ async function editProfile(user: User) {
   }
 }
 
-const editProfileService = { editProfile };
+async function findPassword(email: string) {
+  if (typeof email !== 'string') return undefined;
+  const result: User | undefined = await userRepository.findByEmail(email);
+  return result?.password;
+}
 
-export default editProfileService;
+const userService = { editProfile, findPassword };
+
+export default userService;
