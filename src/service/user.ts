@@ -14,12 +14,16 @@ async function editProfile(user: User) {
   }
 }
 
+async function findByEmail(email:string){
+  return await userRepository.findByEmail(email);
+}
+
 async function findPassword(email: string) {
   if (typeof email !== 'string') return undefined;
   const result: User | undefined = await userRepository.findByEmail(email);
   return result?.password;
 }
 
-const userService = { editProfile, findPassword };
+const userService = { editProfile, findPassword, findByEmail};
 
 export default userService;

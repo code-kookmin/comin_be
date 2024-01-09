@@ -3,6 +3,18 @@ import userService from '../service/user';
 
 const route = express.Router();
 
+route.get("/login", async (req, res) => {
+  if(typeof req.query.email != "string" || typeof req.query.passWord != "string") return res.sendStatus(400);
+
+  const user = await userService.findByEmail(req.query.email);
+  if(user?.password != req.query.passWord) return res.sendStatus(400);
+
+  if(!req.session.user){
+      req.session.user = user;
+  }
+  return res.send(user);
+})
+
 // 비밀번호 조회
 route.get('/password', async (req, res) => {
   const email = req.query.email as string;
