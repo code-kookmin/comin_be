@@ -46,3 +46,41 @@ export function isCommentUpdate(comment: CommentUpdate) {
     return false;
   return true;
 }
+
+export type CommentApiTspec = Tspec.DefineApiSpec<{
+  tags: ['Comment'];
+  paths: {
+    '/comments': {
+      post: {
+        summary: '댓글 생성';
+        body: CommentCreate;
+        responses: { 200: string };
+      };
+    };
+    '/comments/{id}': {
+      get: {
+        summary: '댓글 조회';
+        path: { id: number };
+        responses: { 200: Comment };
+      };
+      put: {
+        summary: '댓글 수정';
+        path: { id: number };
+        body: CommentUpdate;
+        responses: { 200: string };
+      };
+      delete: {
+        summary: '댓글 삭제';
+        path: { id: number };
+        responses: { 200: string };
+      };
+    };
+    '/comments/community/{id}': {
+      get: {
+        summary: '특정 게시글의 댓글 조회';
+        path: { id: number };
+        responses: { 200: Comment };
+      };
+    };
+  };
+}>;

@@ -37,11 +37,15 @@ const findById = async (id: number) => {
 };
 
 const save = async (comment: CommentCreate) => {
-  const insertQuery = `INSERT INTO comment VALUES(NULL, ?, 0)`;
-  const insertParam = [Object.values(comment)];
+  const insertQuery = `INSERT INTO comment VALUES(NULL, ?, ?, ?, 0)`;
+  console.log(comment.userId, comment);
   try {
     const [result, field]: [ResultSetHeader, FieldPacket[]] =
-      await connection.query(insertQuery, insertParam);
+      await connection.query(insertQuery, [
+        comment.userId,
+        comment.communityId,
+        comment.content,
+      ]);
     if (result.insertId <= 0) return undefined;
     return result.insertId;
   } catch (err) {
