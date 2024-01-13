@@ -43,7 +43,9 @@ const findByUserId = async (userId: number) => {
 };
 
 const save = async (reply: ReplyCreate) => {
-  if (!isReplyCreate(reply)) return undefined;
+  if (!isReplyCreate(reply)) {
+    return undefined;
+  }
   try {
     const result = await replyRepository.save(reply);
     if (!result) return undefined;
@@ -55,7 +57,9 @@ const save = async (reply: ReplyCreate) => {
 };
 
 const update = async (id: number, reply: ReplyUpdate) => {
-  if (!isNaN(id) || !isReplyUpdate(reply)) return undefined;
+  if (isNaN(id) || !isReplyUpdate(reply)) {
+    return undefined;
+  }
   try {
     const result = await replyRepository.update(id, reply);
     if (!result) return undefined;
@@ -67,7 +71,7 @@ const update = async (id: number, reply: ReplyUpdate) => {
 };
 
 const deleteById = async (id: number) => {
-  if (!isNaN(id)) return undefined;
+  if (isNaN(id)) return undefined;
   try {
     const result = await replyRepository.deleteById(id);
     if (!result) return undefined;

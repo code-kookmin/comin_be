@@ -9,7 +9,7 @@ route.get('/:id', async (req, res) => {
   try {
     const result = await replyService.findById(id);
     if (!result) return res.sendStatus(400);
-    return res.sendStatus(200);
+    return res.send(result);
   } catch (err) {
     console.log(err);
     return res.sendStatus(400);
@@ -21,7 +21,7 @@ route.get('/comments/:id', async (req, res) => {
   try {
     const result = await replyService.findByCommentId(id);
     if (!result) return res.sendStatus(400);
-    return res.sendStatus(200);
+    return res.send(result);
   } catch (err) {
     console.log(err);
     return res.sendStatus(400);
@@ -33,7 +33,7 @@ route.get('/users/:id', async (req, res) => {
   try {
     const result = await replyService.findByUserId(id);
     if (!result) return res.sendStatus(400);
-    return res.sendStatus(200);
+    return res.send(result);
   } catch (err) {
     console.log(err);
     return res.sendStatus(400);
@@ -41,7 +41,8 @@ route.get('/users/:id', async (req, res) => {
 });
 
 route.post('/', async (req, res) => {
-  const reply: ReplyCreate = req.body();
+  const reply: ReplyCreate = req.body;
+  console.log(typeof reply.commentId, reply.commentId);
   try {
     const result = await replyService.save(reply);
     if (!result) return res.sendStatus(400);
