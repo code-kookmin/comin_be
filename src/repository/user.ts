@@ -12,6 +12,7 @@ interface UserRow extends RowDataPacket {
 }
 
 function UserRowToUser(obj: UserRow) {
+  if (typeof obj == "undefined") return undefined;
   return {
     email: obj.email,
     name: obj.name,
@@ -69,11 +70,8 @@ async function update(user: User) {
 async function findByEmail(email: string) {
   const selectQuery = 'SELECT * FROM user WHERE email=?';
   try {
-    const [[result], field] = await connection.query<[UserRow]>(selectQuery, [
-      email,
-    ]);
-    if (result === undefined) return undefined;
-    else return UserRowToUser(result);
+    const [[result], field] = await connection.query<[UserRow]>(selectQuery, [email,]);
+    return UserRowToUser(result);
   } catch (err) {
     console.log(err);
     return undefined;
