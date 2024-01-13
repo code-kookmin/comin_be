@@ -5,6 +5,8 @@ import signInRoute from '../src/route/signin';
 import WeeklyProblemRoute from './route/weeklyProblem';
 import UserRoute from './route/user';
 import communityRoute from './route/community';
+import commentRoute from './route/comment';
+import ReplyRoute from './route/reply';
 import morgan from 'morgan';
 import cors from 'cors';
 import { TspecDocsMiddleware } from 'tspec';
@@ -23,6 +25,8 @@ app.use('/weekly-problem', WeeklyProblemRoute);
 app.use('/signin', signInRoute);
 app.use('/user', UserRoute);
 app.use('/community', communityRoute);
+app.use('/comment', commentRoute);
+app.use('/reply', ReplyRoute);
 app.get('/', (req: Request, res: Response) => {
   res.sendStatus(418);
 });
