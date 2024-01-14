@@ -29,8 +29,15 @@ export type userApiTspec = Tspec.DefineApiSpec<{
   paths: {
     '/user/login': {
       get: {
-        summary: '사용자 로그인 로그인 상태의 유저면 req.session.user 로 유저 객체 가져올 수 있음'
-        query: { email: string ,password:string};
+        summary: '사용자 로그인 로그인 상태의 유저면 req.session.user 로 유저 객체 가져올 수 있음';
+        query: { email: string; password: string };
+        responses: { 200: string };
+      };
+    };
+    '/user/signin': {
+      post: {
+        summary: '사용자 로그인';
+        body: User;
         responses: { 200: string };
       };
     };
@@ -40,13 +47,13 @@ export type userApiTspec = Tspec.DefineApiSpec<{
         query: { email: string };
         responses: { 200: string };
       };
-    },
+    };
     '/user/profile': {
       put: {
         summary: '사용자 프로필 수정';
         body: User;
         responses: { 200: string };
       };
-    },
+    };
   };
 }>;

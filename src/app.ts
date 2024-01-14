@@ -1,7 +1,6 @@
 import express, { Request, Response } from 'express';
 import dotenv from 'dotenv';
 import helloRoute from '../src/route/hello';
-import signInRoute from '../src/route/signin';
 import WeeklyProblemRoute from './route/weeklyProblem';
 import UserRoute from './route/user';
 import communityRoute from './route/community';
@@ -47,7 +46,6 @@ app.use('/docs', await TspecDocsMiddleware());
 
 app.use('/weekly-problem', WeeklyProblemRoute);
 
-app.use('/signin', signInRoute);
 app.use('/user', UserRoute);
 app.use('/community', communityRoute);
 app.use('/comments', commentRoute);
