@@ -1,11 +1,21 @@
 import categoryRepository from '../repository/category';
 import communityRepository from '../repository/community';
 
-async function save(title: string, category: string, content: string) {
+async function save(
+  title: string,
+  category: string,
+  content: string,
+  userId: number
+) {
   try {
     const categoryId = await categoryRepository.findCategoryIdByName(category);
     if (categoryId === undefined) return undefined;
-    const result = await communityRepository.save(title, categoryId, content);
+    const result = await communityRepository.save(
+      title,
+      categoryId,
+      content,
+      userId
+    );
     if (result === undefined) return undefined;
     return result;
   } catch (err) {

@@ -24,7 +24,10 @@ function communityRowToCommunity(obj: CommuntiyRow) {
 async function findById(id: number) {
   const selectQuery = `SELECT * FROM community WHERE id=?`;
   try {
-    const [[result], field] = await connection.query<[CommuntiyRow]>(selectQuery, [id]);
+    const [[result], field] = await connection.query<[CommuntiyRow]>(
+      selectQuery,
+      [id]
+    );
     return communityRowToCommunity(result);
   } catch (err) {
     console.log(err);
@@ -32,9 +35,14 @@ async function findById(id: number) {
   }
 }
 
-async function save(title: string, categoryId: number, content: string) {
-  const insertParam = [categoryId, title, content, 0];
-  const insertQuery = `INSERT INTO community VALUES(NULL, 1, ?, ?, ?, ?)`;
+async function save(
+  title: string,
+  categoryId: number,
+  content: string,
+  userId: number
+) {
+  const insertParam = [userId, categoryId, title, content, 0];
+  const insertQuery = `INSERT INTO community VALUES(NULL, ?, ?, ?, ?, ?)`;
   try {
     const [result, field]: [ResultSetHeader, FieldPacket[]] =
       await connection.query(insertQuery, insertParam);
