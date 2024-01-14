@@ -47,8 +47,15 @@ async function deleteById(id: number) {
   }
 }
 
-async function update(id: number, title: string, content: string) {
+async function update(
+  id: number,
+  userId: number,
+  title: string,
+  content: string
+) {
   try {
+    const community = await communityRepository.findById(id);
+    if (community?.userId !== userId) return undefined;
     const result = await communityRepository.update(id, title, content);
     return result;
   } catch (err) {

@@ -59,10 +59,17 @@ route.delete('/:id', async (req, res) => {
 route.put('/:id', async (req, res) => {
   const { title, content } = req.body;
   const id = parseInt(req.params.id);
-  if (isNaN(id) || typeof title !== 'string' || typeof content !== 'string')
+  const user = req.session.user;
+  if (
+    isNaN(id) ||
+    typeof title !== 'string' ||
+    typeof content !== 'string' ||
+    !user ||
+    !isUser(user)
+  )
     return res.sendStatus(400);
   try {
-    const result = await communityService.update(id, title, content);
+    const result = await communityService.update(id, user.id, title, content);
     if (result === undefined) return res.sendStatus(400);
     return res.sendStatus(200);
   } catch (err) {

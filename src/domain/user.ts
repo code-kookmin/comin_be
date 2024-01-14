@@ -12,6 +12,7 @@ export interface User {
 
 export function isUser(obj: any): obj is User {
   if (
+    typeof obj.id !== 'number' ||
     typeof obj.email !== 'string' ||
     typeof obj.password !== 'string' ||
     typeof obj.name !== 'string' ||
@@ -30,7 +31,7 @@ export type userApiTspec = Tspec.DefineApiSpec<{
     '/user/login': {
       get: {
         summary: '사용자 로그인 로그인 상태의 유저면 req.session.user 로 유저 객체 가져올 수 있음';
-        query: { email: string; password: string };
+        query: { email: string; passWord: string };
         responses: { 200: string };
       };
     };

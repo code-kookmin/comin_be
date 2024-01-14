@@ -1,6 +1,7 @@
 import { Tspec } from 'tspec';
 
 export interface Communtiy {
+  id: number;
   userId: number;
   categoryId: number;
   title: string;
@@ -10,6 +11,7 @@ export interface Communtiy {
 
 export function isCommuntiy(obj: Communtiy) {
   if (
+    typeof obj.id !== 'number' ||
     typeof obj.categoryId !== 'number' ||
     typeof obj.userId !== 'number' ||
     typeof obj.title !== 'string' ||
