@@ -46,6 +46,7 @@ async function save(
   try {
     const [result, field]: [ResultSetHeader, FieldPacket[]] =
       await connection.query(insertQuery, insertParam);
+    console.log('community create insertId : ', result.insertId);
     return result.insertId;
   } catch (err) {
     console.log(err);

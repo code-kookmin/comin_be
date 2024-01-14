@@ -3,6 +3,7 @@ import { FieldPacket, ResultSetHeader, RowDataPacket } from 'mysql2';
 import { User } from '../domain/user';
 
 interface UserRow extends RowDataPacket {
+  id: number;
   email: string;
   password: string;
   name: string;
@@ -12,8 +13,9 @@ interface UserRow extends RowDataPacket {
 }
 
 function UserRowToUser(obj: UserRow) {
-  if (typeof obj == "undefined") return undefined;
+  if (typeof obj == 'undefined') return undefined;
   return {
+    id: obj.id,
     email: obj.email,
     name: obj.name,
     password: obj.password,
@@ -25,6 +27,7 @@ function UserRowToUser(obj: UserRow) {
 
 function UserToUserRow(obj: User) {
   return {
+    id: obj.id,
     email: obj.email,
     name: obj.name,
     password: obj.password,
@@ -70,7 +73,9 @@ async function update(user: User) {
 async function findByEmail(email: string) {
   const selectQuery = 'SELECT * FROM user WHERE email=?';
   try {
-    const [[result], field] = await connection.query<[UserRow]>(selectQuery, [email,]);
+    const [[result], field] = await connection.query<[UserRow]>(selectQuery, [
+      email,
+    ]);
     return UserRowToUser(result);
   } catch (err) {
     console.log(err);

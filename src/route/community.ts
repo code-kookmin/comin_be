@@ -23,6 +23,7 @@ route.post('/', async (req, res) => {
     typeof title !== 'string' ||
     typeof category !== 'string' ||
     typeof content !== 'string' ||
+    !user ||
     !isUser(user)
   )
     return res.sendStatus(400);
@@ -33,6 +34,7 @@ route.post('/', async (req, res) => {
       content,
       user.id
     );
+    console.log('community create route : ', result);
     if (result === undefined) return res.sendStatus(400);
     return res.sendStatus(200);
   } catch (err) {

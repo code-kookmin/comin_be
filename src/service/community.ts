@@ -16,6 +16,7 @@ async function save(
       content,
       userId
     );
+    console.log('community create service : ', result);
     if (result === undefined) return undefined;
     return result;
   } catch (err) {

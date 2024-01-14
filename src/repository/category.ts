@@ -13,7 +13,7 @@ async function findCategoryIdByName(name: string) {
       selectQuery,
       [name]
     );
-    console.log(result);
+    console.log('category findByName repo : ', result);
     if (result === undefined) return undefined;
     const categoryId = result.id;
     return categoryId;
