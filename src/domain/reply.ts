@@ -8,17 +8,6 @@ export interface Reply {
   like: number;
 }
 
-export interface ReplyUpdate {
-  content: string;
-  like: number;
-}
-
-export interface ReplyCreate {
-  userId: number;
-  commentId: number;
-  content: string;
-}
-
 export function isReply(reply: Reply) {
   if (
     typeof reply.id !== 'number' ||
@@ -31,20 +20,13 @@ export function isReply(reply: Reply) {
   return true;
 }
 
-export function isReplyCreate(reply: ReplyCreate) {
-  if (
-    typeof reply.userId !== 'number' ||
-    typeof reply.commentId !== 'number' ||
-    typeof reply.content !== 'string'
-  )
-    return false;
+export function isReplyCreate(reply: Reply) {
+  if (typeof reply.commentId !== 'number' || typeof reply.content !== 'string') return false;
   return true;
 }
 
-export function isReplyUpdate(reply: ReplyUpdate) {
-  console.log(typeof reply.content, typeof reply.like);
-  if (typeof reply.content !== 'string' || typeof reply.like !== 'number')
-    return false;
+export function isReplyUpdate(reply: Reply) {
+  if (typeof reply.content !== 'string' || typeof reply.like !== 'number') return false;
   return true;
 }
 
@@ -54,7 +36,7 @@ export type ReplyApiTspec = Tspec.DefineApiSpec<{
     '/reply': {
       post: {
         summary: '대댓글 생성';
-        body: ReplyCreate;
+        body: { commentId: number; content: string };
         responses: { 200: string };
       };
     };
@@ -67,7 +49,7 @@ export type ReplyApiTspec = Tspec.DefineApiSpec<{
       put: {
         summary: '대댓글 수정';
         path: { id: number };
-        body: ReplyUpdate;
+        body: { content: string; like: number };
         responses: { 200: string };
       };
       delete: {

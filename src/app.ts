@@ -47,8 +47,8 @@ app.use('/docs', await TspecDocsMiddleware());
 app.use('/weekly-problem', WeeklyProblemRoute);
 
 app.use('/user', UserRoute);
-app.use('/community', communityRoute);
-app.use('/comments', commentRoute);
+app.use('/community', communityRoute, commentRoute);
+// app.use('/comments', commentRoute);
 app.use('/reply', ReplyRoute);
 app.get('/', (req: Request, res: Response) => {
   res.sendStatus(418);

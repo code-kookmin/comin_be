@@ -1,6 +1,6 @@
 import { FieldPacket, ResultSetHeader, RowDataPacket } from 'mysql2';
 import connection from '../config/connection';
-import { ReplyCreate, ReplyUpdate } from '../domain/reply';
+import { Reply } from '../domain/reply';
 
 interface ReplyRow extends RowDataPacket {
   id: number;
@@ -13,8 +13,7 @@ interface ReplyRow extends RowDataPacket {
 const findById = async (id: number) => {
   const selectQuery = `SELECT * FROM reply WHERE id=?`;
   try {
-    const [[result], field]: [ReplyRow[], FieldPacket[]] =
-      await connection.query(selectQuery, [id]);
+    const [[result], field]: [ReplyRow[], FieldPacket[]] = await connection.query(selectQuery, [id]);
     if (!result) return undefined;
     return result;
   } catch (err) {
@@ -26,10 +25,7 @@ const findById = async (id: number) => {
 const findByCommentId = async (id: number) => {
   const selectQuery = `SELECT * FROM reply WHERE comment_id=?`;
   try {
-    const [result, field]: [ReplyRow[], FieldPacket[]] = await connection.query(
-      selectQuery,
-      [id]
-    );
+    const [result, field]: [ReplyRow[], FieldPacket[]] = await connection.query(selectQuery, [id]);
     if (!result) return undefined;
     return result;
   } catch (err) {
@@ -41,10 +37,7 @@ const findByCommentId = async (id: number) => {
 const findByUserId = async (id: number) => {
   const selectQuery = `SELECT * FROM reply WHERE user_id=?`;
   try {
-    const [result, field]: [ReplyRow[], FieldPacket[]] = await connection.query(
-      selectQuery,
-      [id]
-    );
+    const [result, field]: [ReplyRow[], FieldPacket[]] = await connection.query(selectQuery, [id]);
     if (!result) return undefined;
     return result;
   } catch (err) {
@@ -53,15 +46,14 @@ const findByUserId = async (id: number) => {
   }
 };
 
-const save = async (reply: ReplyCreate) => {
+const save = async (reply: Reply) => {
   const insertQuery = `INSERT INTO reply VALUES(NULL, ?, ?, ?,  0)`;
   try {
-    const [result, field]: [ResultSetHeader, FieldPacket[]] =
-      await connection.query(insertQuery, [
-        reply.userId,
-        reply.commentId,
-        reply.content,
-      ]);
+    const [result, field]: [ResultSetHeader, FieldPacket[]] = await connection.query(insertQuery, [
+      reply.userId,
+      reply.commentId,
+      reply.content,
+    ]);
     if (result.insertId <= 0) return undefined;
     return result.insertId;
   } catch (err) {
@@ -70,11 +62,14 @@ const save = async (reply: ReplyCreate) => {
   }
 };
 
-const update = async (id: number, reply: ReplyUpdate) => {
+const update = async (id: number, reply: Reply) => {
   const updateQuery = 'UPDATE reply SET content=?, `like`=? WHERE id=?';
   try {
-    const [result, field]: [ResultSetHeader, FieldPacket[]] =
-      await connection.query(updateQuery, [reply.content, reply.like, id]);
+    const [result, field]: [ResultSetHeader, FieldPacket[]] = await connection.query(updateQuery, [
+      reply.content,
+      reply.like,
+      id,
+    ]);
     if (result.affectedRows === 0) return undefined;
     return result.affectedRows;
   } catch (err) {
@@ -86,8 +81,7 @@ const update = async (id: number, reply: ReplyUpdate) => {
 const deleteById = async (id: number) => {
   const deleteQuery = `DELETE FROM reply WHERE id=?`;
   try {
-    const [result, field]: [ResultSetHeader, FieldPacket[]] =
-      await connection.query(deleteQuery, [id]);
+    const [result, field]: [ResultSetHeader, FieldPacket[]] = await connection.query(deleteQuery, [id]);
     if (result.affectedRows === 0) return undefined;
     return result.affectedRows;
   } catch (err) {

@@ -4,15 +4,9 @@ import { getHashedPassword } from '../util/hashPassword';
 
 async function editProfile(user: User) {
   if (!isUser(user)) return undefined;
-  try {
-    const result = await userRepository.update(user);
-    console.log(result);
-    if (result === 0) return undefined;
-    return result;
-  } catch (err) {
-    console.log(err);
-    return undefined;
-  }
+  const result = await userRepository.update(user);
+  if (result === 0) return undefined;
+  return result;
 }
 
 async function findByEmail(email: string) {
@@ -27,9 +21,7 @@ async function findPassword(email: string) {
 
 async function signIn(user: User) {
   const result = await userRepository.findByEmail(user.email);
-  if (result) {
-    return undefined;
-  }
+  if (!result) return undefined;
   user.password = await getHashedPassword(user.password);
   const queryResult = await userRepository.save(user);
   return queryResult;

@@ -1,6 +1,6 @@
 import { FieldPacket, ResultSetHeader, RowDataPacket } from 'mysql2';
 import connection from '../config/connection';
-import { CommentCreate, CommentUpdate } from '../domain/comment';
+import { Comment } from '../domain/comment';
 
 interface CommentRow extends RowDataPacket {
   id: number;
@@ -13,8 +13,7 @@ interface CommentRow extends RowDataPacket {
 const findByCommunityId = async (communityId: number) => {
   const selectQuery = `SELECT * FROM comment WHERE community_id=?`;
   try {
-    const [result, field]: [CommentRow[], FieldPacket[]] =
-      await connection.query(selectQuery, communityId);
+    const [result, field]: [CommentRow[], FieldPacket[]] = await connection.query(selectQuery, communityId);
     if (!result[0]) return undefined;
     return result;
   } catch (err) {
@@ -26,8 +25,7 @@ const findByCommunityId = async (communityId: number) => {
 const findById = async (id: number) => {
   const selectQuery = `SELECT * FROM comment WHERE id=?`;
   try {
-    const [[result], field]: [CommentRow[], FieldPacket[]] =
-      await connection.query(selectQuery, id);
+    const [[result], field]: [CommentRow[], FieldPacket[]] = await connection.query(selectQuery, id);
     if (!result) return undefined;
     return result;
   } catch (err) {
@@ -36,16 +34,15 @@ const findById = async (id: number) => {
   }
 };
 
-const save = async (comment: CommentCreate) => {
+const save = async (comment: Comment) => {
   const insertQuery = `INSERT INTO comment VALUES(NULL, ?, ?, ?, 0)`;
   console.log(comment.userId, comment);
   try {
-    const [result, field]: [ResultSetHeader, FieldPacket[]] =
-      await connection.query(insertQuery, [
-        comment.userId,
-        comment.communityId,
-        comment.content,
-      ]);
+    const [result, field]: [ResultSetHeader, FieldPacket[]] = await connection.query(insertQuery, [
+      comment.userId,
+      comment.communityId,
+      comment.content,
+    ]);
     if (result.insertId <= 0) return undefined;
     return result.insertId;
   } catch (err) {
@@ -54,12 +51,11 @@ const save = async (comment: CommentCreate) => {
   }
 };
 
-const update = async (id: number, comment: CommentUpdate) => {
+const update = async (id: number, comment: Comment) => {
   const updateQuery = 'UPDATE comment SET content=?, `like`=? WHERE id=?';
   const updateParam = [comment.content, comment.like, id];
   try {
-    const [result, field]: [ResultSetHeader, FieldPacket[]] =
-      await connection.query(updateQuery, updateParam);
+    const [result, field]: [ResultSetHeader, FieldPacket[]] = await connection.query(updateQuery, updateParam);
     if (result.affectedRows === 0) return undefined;
     return result.affectedRows;
   } catch (err) {
@@ -71,8 +67,7 @@ const update = async (id: number, comment: CommentUpdate) => {
 const deleteById = async (id: number) => {
   const deleteQuery = `DELETE FROM comment WHERE id=?`;
   try {
-    const [result, field]: [ResultSetHeader, FieldPacket[]] =
-      await connection.query(deleteQuery, [id]);
+    const [result, field]: [ResultSetHeader, FieldPacket[]] = await connection.query(deleteQuery, [id]);
     if (result.affectedRows === 0) return undefined;
     return result.affectedRows;
   } catch (err) {
