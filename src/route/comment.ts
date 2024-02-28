@@ -4,9 +4,9 @@ import { Comment } from '../domain/comment';
 
 const route = express.Router();
 
-route.get('/comments/:commentId', async (req, res) => {
+route.get('/comments/:commentId', (req, res) => {
   const commentId: number = parseInt(req.params.commentId);
-  const result = await commentService.findById(commentId);
+  const result = commentService.findById(commentId);
   if (!result) return res.sendStatus(400);
   return res.send(result);
 });

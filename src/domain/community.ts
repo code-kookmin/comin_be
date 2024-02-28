@@ -22,6 +22,12 @@ export function isCommuntiy(obj: Communtiy) {
   return true;
 }
 
+export function isCommunityCreate(obj: Communtiy) {
+  if (typeof obj.categoryId !== 'number' || typeof obj.title !== 'string' || typeof obj.content !== 'string')
+    return false;
+  return true;
+}
+
 export type CommuntiyApiTspec = Tspec.DefineApiSpec<{
   tags: ['Community'];
   paths: {
@@ -50,7 +56,7 @@ export type CommuntiyApiTspec = Tspec.DefineApiSpec<{
       post: {
         summary: '게시물 생성';
         body: {
-          category: string;
+          categoryId: number;
           title: string;
           content: string;
         };
