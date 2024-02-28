@@ -14,7 +14,7 @@ import { TspecDocsMiddleware } from 'tspec';
 import schedule from 'node-schedule';
 import { User } from './domain/user/user';
 import { refreshRating } from './util/refreshRating';
-import { updateRound } from './util/updateRound';
+import { updateAndSettleRound } from './util/updateAndSettleRound';
 declare module 'express-session' {
   export interface SessionData {
     user: User;
@@ -26,7 +26,7 @@ schedule.scheduleJob('* * * * * *', () => {
   refreshRating();
 });
 schedule.scheduleJob('0 * * * * *', async () => {
-  await updateRound();
+  await await updateAndSettleRound();
 });
 
 const app = express();
