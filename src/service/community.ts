@@ -1,10 +1,9 @@
+import { Communtiy } from '../domain/community';
 import categoryRepository from '../repository/category';
 import communityRepository from '../repository/community';
 
-async function save(title: string, category: string, content: string, userId: number) {
-  const categoryId = await categoryRepository.findCategoryIdByName(category);
-  if (categoryId === undefined) return undefined;
-  const result = await communityRepository.save(title, categoryId, content, userId);
+async function save(community: Communtiy) {
+  const result = await communityRepository.save(community);
   if (result === undefined) return undefined;
   return result;
 }
@@ -15,7 +14,15 @@ async function findById(id: number) {
   return result;
 }
 
-async function deleteById(id: number) {
+async function findByUserId(userId: number) {
+  const result = await communityRepository.findByUserId(userId);
+  if (result === undefined) return undefined;
+  return result;
+}
+
+async function deleteById(userId: number, id: number) {
+  const community = await communityRepository.findById(id);
+  if (userId !== community?.userId) return undefined;
   const result = await communityRepository.deleteById(id);
   if (result === undefined || result === 0) return undefined;
   return result;
@@ -28,6 +35,6 @@ async function update(id: number, userId: number, title: string, content: string
   return result;
 }
 
-const communityService = { save, findById, deleteById, update };
+const communityService = { save, findById, deleteById, update, findByUserId };
 
 export default communityService;

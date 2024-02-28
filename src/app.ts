@@ -11,8 +11,10 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import session from 'express-session';
 import { TspecDocsMiddleware } from 'tspec';
-
-import { User } from './domain/user';
+import schedule from 'node-schedule';
+import { User } from './domain/user/user';
+import { refreshRating } from './util/refreshRating';
+import { updateRound } from './util/updateRound';
 declare module 'express-session' {
   export interface SessionData {
     user: User;
@@ -20,6 +22,12 @@ declare module 'express-session' {
 }
 
 dotenv.config();
+schedule.scheduleJob('* * * * * *', () => {
+  refreshRating();
+});
+schedule.scheduleJob('0 * * * * *', async () => {
+  await updateRound();
+});
 
 const app = express();
 

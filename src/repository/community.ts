@@ -24,10 +24,7 @@ function communityRowToCommunity(obj: CommuntiyRow) {
 async function findById(id: number) {
   const selectQuery = `SELECT * FROM community WHERE id=?`;
   try {
-    const [[result], field] = await connection.query<[CommuntiyRow]>(
-      selectQuery,
-      [id]
-    );
+    const [[result], field] = await connection.query<[CommuntiyRow]>(selectQuery, [id]);
     return communityRowToCommunity(result);
   } catch (err) {
     console.log(err);
@@ -35,17 +32,22 @@ async function findById(id: number) {
   }
 }
 
-async function save(
-  title: string,
-  categoryId: number,
-  content: string,
-  userId: number
-) {
-  const insertParam = [userId, categoryId, title, content, 0];
+async function findByUserId(userId: number) {
+  const selectQuery = `SELECT * FROM community WHERE user_id=?`;
+  try {
+    const [[result], field] = await connection.query<[CommuntiyRow]>(selectQuery, [userId]);
+    return communityRowToCommunity(result);
+  } catch (err) {
+    console.log(err);
+    return undefined;
+  }
+}
+
+async function save(community: Communtiy) {
+  const insertParam = [community.userId, community.categoryId, community.title, community.content, 0];
   const insertQuery = `INSERT INTO community VALUES(NULL, ?, ?, ?, ?, ?)`;
   try {
-    const [result, field]: [ResultSetHeader, FieldPacket[]] =
-      await connection.query(insertQuery, insertParam);
+    const [result, field]: [ResultSetHeader, FieldPacket[]] = await connection.query(insertQuery, insertParam);
     console.log('community create insertId : ', result.insertId);
     return result.insertId;
   } catch (err) {
@@ -57,8 +59,7 @@ async function save(
 async function deleteById(id: number) {
   const deleteQuery = `DELETE FROM community WHERE id=?`;
   try {
-    const [result, field]: [ResultSetHeader, FieldPacket[]] =
-      await connection.query(deleteQuery, [id]);
+    const [result, field]: [ResultSetHeader, FieldPacket[]] = await connection.query(deleteQuery, [id]);
     return result.affectedRows;
   } catch (err) {
     console.log(err);
@@ -70,8 +71,7 @@ async function update(id: number, title: string, content: string) {
   const updateQuery = `UPDATE community SET title=?, content=? WHERE id=?`;
   const updateParam = [title, content, id];
   try {
-    const [result, field]: [ResultSetHeader, FieldPacket[]] =
-      await connection.query(updateQuery, updateParam);
+    const [result, field]: [ResultSetHeader, FieldPacket[]] = await connection.query(updateQuery, updateParam);
     if (result.affectedRows === 0) return undefined;
     return result.affectedRows;
   } catch (err) {
@@ -80,6 +80,6 @@ async function update(id: number, title: string, content: string) {
   }
 }
 
-const communityRepository = { save, findById, deleteById, update };
+const communityRepository = { save, findById, deleteById, update, findByUserId };
 
 export default communityRepository;

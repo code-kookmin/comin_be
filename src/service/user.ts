@@ -1,9 +1,11 @@
-import { User, isUser } from '../domain/user';
+import { User, isUser } from '../domain/user/user';
+import { UserCreate } from '../domain/user/userCreate';
 import userRepository from '../repository/user';
 import { getHashedPassword } from '../util/hashPassword';
 
-async function editProfile(user: User) {
-  if (!isUser(user)) return undefined;
+async function editProfile(sessionUserId: number, user: UserCreate) {
+  const originProfile = await userRepository.findByEmail(user.email);
+  if (originProfile && originProfile.id != sessionUserId) return undefined;
   const result = await userRepository.update(user);
   if (result === 0) return undefined;
   return result;
@@ -19,9 +21,9 @@ async function findPassword(email: string) {
   return result?.password;
 }
 
-async function signIn(user: User) {
+async function signIn(user: UserCreate) {
   const result = await userRepository.findByEmail(user.email);
-  if (!result) return undefined;
+  if (result) return undefined;
   user.password = await getHashedPassword(user.password);
   const queryResult = await userRepository.save(user);
   return queryResult;

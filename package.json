@@ -24,6 +24,7 @@
     "express-session": "^1.17.3",
     "morgan": "^1.10.0",
     "mysql2": "^3.6.2",
+    "node-schedule": "^2.1.1",
     "nodemon": "^3.0.1",
     "ts-node": "^10.9.1",
     "tspec": "^0.1.110",
@@ -33,6 +34,7 @@
     "@types/cookie-parser": "^1.4.6",
     "@types/cors": "^2.8.16",
     "@types/express-session": "^1.17.10",
-    "@types/morgan": "^1.9.9"
+    "@types/morgan": "^1.9.9",
+    "@types/node-schedule": "^2.1.6"
   }
 }

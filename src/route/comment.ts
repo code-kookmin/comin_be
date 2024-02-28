@@ -1,12 +1,15 @@
 import express from 'express';
 import commentService from '../service/comment';
-import { Comment } from '../domain/comment';
+import { Comment } from '../domain/comment/comment';
+import { CommentCreate } from '../domain/comment/commentCreate';
+import { CommentUpdate, isCommentUpdate } from '../domain/comment/commentUpdate';
+import { isUser } from '../domain/user/user';
 
 const route = express.Router();
 
-route.get('/comments/:commentId', (req, res) => {
+route.get('/comments/:commentId', async (req, res) => {
   const commentId: number = parseInt(req.params.commentId);
-  const result = commentService.findById(commentId);
+  const result = await commentService.findById(commentId);
   if (!result) return res.sendStatus(400);
   return res.send(result);
 });
@@ -19,23 +22,29 @@ route.get('/:communityId/comments', async (req, res) => {
 });
 
 route.post('/comments', async (req, res) => {
-  const comment: Comment = req.body;
-  const result = await commentService.save(comment);
+  const comment: CommentCreate = req.body;
+  const user = req.session.user;
+  if (!user || !isUser(user)) return res.sendStatus(400);
+  const result = await commentService.save(user.id, comment);
   if (!result) return res.sendStatus(400);
   return res.sendStatus(200);
 });
 
 route.put('/comments/:commentId', async (req, res) => {
   const commentId: number = parseInt(req.params.commentId);
-  const comment: Comment = req.body;
-  const result = await commentService.update(commentId, comment);
+  const comment: CommentUpdate = req.body;
+  const user = req.session.user;
+  if (!isCommentUpdate(comment) || isNaN(commentId) || !user || !isUser(user)) return res.sendStatus(400);
+  const result = await commentService.update(user?.id, commentId, comment);
   if (!result) return res.sendStatus(400);
   return res.sendStatus(200);
 });
 
 route.delete('/comments/:commentId', async (req, res) => {
   const commentId: number = parseInt(req.params.commentId);
-  const result = await commentService.deleteById(commentId);
+  const user = req.session.user;
+  if (!user || !isUser(user)) return res.sendStatus(400);
+  const result = await commentService.deleteById(user.id, commentId);
   if (!result) return res.sendStatus(400);
   return res.sendStatus(200);
 });
