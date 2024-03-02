@@ -7,4 +7,14 @@ async function save(round: RoundCreate) {
   return result;
 }
 
-export const roundService = { save };
+async function getCurrentRound() {
+  const result = await roundRepository.getCurrentRound();
+  return result;
+}
+
+async function getLastRound() {
+  const result = await roundRepository.getLastRound();
+  return result;
+}
+
+export const roundService = { save, getCurrentRound, getLastRound };

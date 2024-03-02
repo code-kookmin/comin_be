@@ -6,6 +6,7 @@ import UserRoute from './route/user';
 import communityRoute from './route/community';
 import commentRoute from './route/comment';
 import ReplyRoute from './route/reply';
+import UserRankingRoute from './route/userRanking';
 import morgan from 'morgan';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
@@ -14,7 +15,7 @@ import { TspecDocsMiddleware } from 'tspec';
 import schedule from 'node-schedule';
 import { User } from './domain/user/user';
 import { refreshRating } from './util/refreshRating';
-import { updateAndSettleRound } from './util/updateAndSettleRound';
+import { settleAndUpdateRound } from './util/updateAndSettleRound';
 declare module 'express-session' {
   export interface SessionData {
     user: User;
@@ -22,11 +23,11 @@ declare module 'express-session' {
 }
 
 dotenv.config();
-schedule.scheduleJob('* * * * * *', () => {
-  refreshRating();
+schedule.scheduleJob('* * * * * *', async () => {
+  await refreshRating();
 });
 schedule.scheduleJob('0 * * * * *', async () => {
-  await await updateAndSettleRound();
+  await settleAndUpdateRound();
 });
 
 const app = express();
@@ -54,7 +55,7 @@ app.use('/docs', await TspecDocsMiddleware());
 
 app.use('/weekly-problem', WeeklyProblemRoute);
 
-app.use('/user', UserRoute);
+app.use('/user', UserRoute, UserRankingRoute);
 app.use('/community', communityRoute, commentRoute);
 // app.use('/comments', commentRoute);
 app.use('/reply', ReplyRoute);

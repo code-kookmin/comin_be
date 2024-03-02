@@ -8,4 +8,18 @@ async function save(rating: RatingCreate) {
   return result;
 }
 
-export const ratingService = { save };
+async function getUserRatingByRound(userId: number, roundId: number) {
+  if (isNaN(userId) || isNaN(roundId)) return undefined;
+  const result = await ratingRepository.getUserRatingByRound(userId, roundId);
+  if (!result) return undefined;
+  return result;
+}
+
+async function getLastUserRatingByRound(userId: number, roundId: number) {
+  if (isNaN(userId) || isNaN(roundId)) return undefined;
+  const result = await ratingRepository.getUserRatingByRound(userId, roundId);
+  if (!result) return undefined;
+  return result[0];
+}
+
+export const ratingService = { save, getUserRatingByRound, getLastUserRatingByRound };

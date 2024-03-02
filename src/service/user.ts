@@ -21,6 +21,12 @@ async function findPassword(email: string) {
   return result?.password;
 }
 
+async function findAll() {
+  const result = await userRepository.findAll();
+  if (!result) return undefined;
+  return result;
+}
+
 async function signIn(user: UserCreate) {
   const result = await userRepository.findByEmail(user.email);
   if (result) return undefined;
@@ -29,6 +35,6 @@ async function signIn(user: UserCreate) {
   return queryResult;
 }
 
-const userService = { editProfile, findPassword, findByEmail, signIn };
+const userService = { editProfile, findPassword, findByEmail, findAll, signIn };
 
 export default userService;
