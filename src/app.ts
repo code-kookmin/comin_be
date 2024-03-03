@@ -14,8 +14,8 @@ import session from 'express-session';
 import { TspecDocsMiddleware } from 'tspec';
 import schedule from 'node-schedule';
 import { User } from './domain/user/user';
-import { refreshRating } from './util/refreshRating';
-import { settleAndUpdateRound } from './util/updateAndSettleRound';
+import { updateRatingAndRanking } from './util/updateRankingAndRating';
+import { updateAndInitRound } from './util/updateAndInitRound';
 declare module 'express-session' {
   export interface SessionData {
     user: User;
@@ -24,10 +24,10 @@ declare module 'express-session' {
 
 dotenv.config();
 schedule.scheduleJob('* * * * * *', async () => {
-  await refreshRating();
+  await updateRatingAndRanking();
 });
 schedule.scheduleJob('0 * * * * *', async () => {
-  await settleAndUpdateRound();
+  await updateAndInitRound();
 });
 
 const app = express();

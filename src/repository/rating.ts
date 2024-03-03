@@ -31,7 +31,6 @@ async function save(rating: RatingCreate) {
   const createParams = Object.values(rating);
   try {
     const [result, field]: [ResultSetHeader, FieldPacket[]] = await connection.query(createQuery, createParams);
-    console.log(result.insertId);
     return result.insertId;
   } catch (err) {
     console.log(err);

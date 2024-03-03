@@ -9,6 +9,7 @@ interface UserRankingRow extends RowDataPacket {
   round_id: number;
   total_solved: number;
   total_solved_weight: number;
+  tier: number;
 }
 
 function UserRankingRowToUserRanking(obj: UserRankingRow) {
@@ -18,6 +19,7 @@ function UserRankingRowToUserRanking(obj: UserRankingRow) {
     roundId: obj.round_id,
     totalSolved: obj.total_solved,
     totalSolvedWeight: obj.total_solved_weight,
+    tier: obj.tier
   } as UserRanking;
 }
 
@@ -34,6 +36,18 @@ async function save(ranking: UserRankingCreate) {
   }
 }
 
+async function update(ranking:UserRankingCreate) {
+  const updateQuery = 'UPDATE user_ranking SET total_solved=?, total_solved_weight=?, tier=? WHERE user_id=? AND round_id=?';
+  const updateParam = [ranking.totalSolved, ranking.totalSolvedWeight, ranking.tier, ranking.userId, ranking.roundId];
+  try{
+    const [result, field]: [ResultSetHeader, FieldPacket[]] = await connection.query(updateQuery, updateParam);
+    return result.affectedRows;
+  }catch(err){
+    console.log(err);
+    return undefined;
+  }
+  
+}
 async function findByUserAndRound(userId: number, roundId: number) {
   const selectQuery = 'SELECT * FROM user_ranking WHERE user_id=? AND round_id=?';
   const selectParam = [userId, roundId];
@@ -61,4 +75,4 @@ async function findOrderedBySolvedCount(roundId: number, pageSize: number, pageN
   }
 }
 
-export const userRankingRepository = { save, findByUserAndRound, findOrderedBySolvedCount };
+export const userRankingRepository = { save, update, findByUserAndRound, findOrderedBySolvedCount };
