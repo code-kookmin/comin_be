@@ -67,9 +67,9 @@ async function deleteById(id: number) {
   }
 }
 
-async function update(id: number, title: string, content: string) {
+async function update(id: number, community:Communtiy) {
   const updateQuery = `UPDATE community SET title=?, content=? WHERE id=?`;
-  const updateParam = [title, content, id];
+  const updateParam = [community.title, community.content, id];
   try {
     const [result, field]: [ResultSetHeader, FieldPacket[]] = await connection.query(updateQuery, updateParam);
     if (result.affectedRows === 0) return undefined;

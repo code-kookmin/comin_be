@@ -19,14 +19,15 @@ import { updateAndInitRound } from './util/updateAndInitRound';
 declare module 'express-session' {
   export interface SessionData {
     user: User;
+    admin: Boolean
   }
 }
 
 dotenv.config();
-schedule.scheduleJob('* * * * * *', async () => {
+schedule.scheduleJob('0 0 0 * * *', async () => {
   await updateRatingAndRanking();
 });
-schedule.scheduleJob('0 * * * * *', async () => {
+schedule.scheduleJob('0 0 9 * * 1', async () => {
   await updateAndInitRound();
 });
 

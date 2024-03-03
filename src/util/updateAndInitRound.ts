@@ -1,7 +1,10 @@
 import { RoundCreate } from "../domain/round/roundCreate";
-import { ratingService } from "../service/rating";
+import RatingService from "../service/rating";
 import { roundService } from "../service/round";
-import userService from "../service/user";
+import UserService from "../service/user";
+
+const userService = new UserService
+const ratingService = new RatingService
 
 async function updateRound() {
   const round: RoundCreate = {
@@ -24,7 +27,7 @@ async function createUserRankingInitData(){
     const lastUserRating = await ratingService.getLastUserRatingByRound(user.id, lastRound.id);
     if(!lastUserRating) continue;
     await ratingService.save({
-      userId:lastUserRating.id,
+      userId:lastUserRating.userId,
       roundId:lastUserRating.roundId,
       solvedCount:lastUserRating.solvedCount,
       solvedCountWeight:lastUserRating.solvedCountWeight,

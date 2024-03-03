@@ -1,11 +1,13 @@
 import express from 'express';
-import commentService from '../service/comment';
 import { Comment } from '../domain/comment/comment';
 import { CommentCreate } from '../domain/comment/commentCreate';
 import { CommentUpdate, isCommentUpdate } from '../domain/comment/commentUpdate';
 import { isUser } from '../domain/user/user';
+import CommentService from '../service/comment';
+import { authChecker } from '../util/authChecker';
 
 const route = express.Router();
+const commentService = new CommentService();
 
 route.get('/comments/:commentId', async (req, res) => {
   const commentId: number = parseInt(req.params.commentId);
@@ -33,18 +35,16 @@ route.post('/comments', async (req, res) => {
 route.put('/comments/:commentId', async (req, res) => {
   const commentId: number = parseInt(req.params.commentId);
   const comment: CommentUpdate = req.body;
-  const user = req.session.user;
-  if (!isCommentUpdate(comment) || isNaN(commentId) || !user || !isUser(user)) return res.sendStatus(400);
-  const result = await commentService.update(user?.id, commentId, comment);
+  if(!(await authChecker.checkUpdateAndDeleteAuth(req, commentId, commentService))) return res.sendStatus(400);
+  const result = await commentService.update(commentId, comment);
   if (!result) return res.sendStatus(400);
   return res.sendStatus(200);
 });
 
 route.delete('/comments/:commentId', async (req, res) => {
   const commentId: number = parseInt(req.params.commentId);
-  const user = req.session.user;
-  if (!user || !isUser(user)) return res.sendStatus(400);
-  const result = await commentService.deleteById(user.id, commentId);
+  if(!(await authChecker.checkUpdateAndDeleteAuth(req, commentId, commentService))) return res.sendStatus(400);
+  const result = await commentService.deleteById(commentId);
   if (!result) return res.sendStatus(400);
   return res.sendStatus(200);
 });

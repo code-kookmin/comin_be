@@ -1,12 +1,12 @@
 import { RatingCreate } from '../domain/rating/ratingCreate';
-import { ratingService } from '../service/rating';
-import userService from '../service/user';
 import { roundService } from '../service/round';
 import { userRankingService } from '../service/userRanking';
 import { Round } from '../domain/round/round';
 import { User } from '../domain/user/user';
 import { UserRankingCreate } from '../domain/userRanking/userRankingCreate';
 import { updateAndInitRound } from './updateAndInitRound';
+import UserService from '../service/user';
+import RatingService from '../service/rating';
 
 // { level: 0, solved: 0, tried: 0, partial: 0, total: 7174 }
 interface UserBojInfo {
@@ -37,6 +37,9 @@ interface UserBojInfo {
   isRival: true;
   isReverseRival: true;
 }
+
+const userService = new UserService
+const ratingService = new RatingService
 
 async function refreshRating(currentRound:Round, users:User[]) {
   try {
