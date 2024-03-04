@@ -43,6 +43,17 @@ async function findByUserId(userId: number) {
   }
 }
 
+async function findByCategoryId(categoryId:number) {
+  const selectQuery = `SELECT * FROM community WHERE category_id=?`;
+  try {
+    const [result, field] = await connection.query<[CommuntiyRow]>(selectQuery, [categoryId]);
+    return result.map((value)=>communityRowToCommunity(value))
+  } catch (err) {
+    console.log(err);
+    return undefined;
+  }
+}
+
 async function save(community: Communtiy) {
   const insertParam = [community.userId, community.categoryId, community.title, community.content, 0];
   const insertQuery = `INSERT INTO community VALUES(NULL, ?, ?, ?, ?, ?)`;
@@ -80,6 +91,6 @@ async function update(id: number, community:Communtiy) {
   }
 }
 
-const communityRepository = { save, findById, deleteById, update, findByUserId };
+const communityRepository = { save, findById, deleteById, update, findByUserId, findByCategoryId };
 
 export default communityRepository;

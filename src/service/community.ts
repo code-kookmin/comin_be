@@ -37,7 +37,6 @@ import { ServiceLayer } from './ServiceLayer';
 // }
 
 // const communityService = { save, findById, deleteById, update, findByUserId };
-
 export default class CommunityService implements ServiceLayer{
   findById = async function findById(id: number) {
     if(isNaN(id)) return undefined;
@@ -53,8 +52,11 @@ export default class CommunityService implements ServiceLayer{
     return result;
   }
   
-  findByCategoryId = async ()=>{
-
+  findByCategoryId = async (categoryId:number)=>{
+    if(!(await categoryRepository.findCategoryById(categoryId))) return undefined;
+    const result = await communityRepository.findByCategoryId(categoryId);
+    if(!result) return undefined;
+    return result;
   }
   
   update = async function update(id: number, community:Communtiy) {
