@@ -7,6 +7,8 @@ import communityRoute from './route/community';
 import commentRoute from './route/comment';
 import ReplyRoute from './route/reply';
 import UserRankingRoute from './route/userRanking';
+import ProblemRoute from './route/problem';
+import AdminRoute from './route/admin';
 import morgan from 'morgan';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
@@ -19,7 +21,7 @@ import { updateAndInitRound } from './util/updateAndInitRound';
 declare module 'express-session' {
   export interface SessionData {
     user: User;
-    admin: Boolean
+    admin: Boolean;
   }
 }
 
@@ -55,7 +57,7 @@ app.use(
 app.use('/docs', await TspecDocsMiddleware());
 
 app.use('/weekly-problem', WeeklyProblemRoute);
-
+app.use('/admin', AdminRoute);
 app.use('/user', UserRoute, UserRankingRoute);
 app.use('/community', communityRoute, commentRoute);
 // app.use('/comments', commentRoute);
@@ -63,7 +65,7 @@ app.use('/reply', ReplyRoute);
 app.get('/', (req: Request, res: Response) => {
   res.sendStatus(418);
 });
-
+app.use('/problem', ProblemRoute);
 app.listen('8080', () => {
   console.log(`8080 port is lintening.`);
 });

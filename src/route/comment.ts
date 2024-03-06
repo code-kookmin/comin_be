@@ -27,7 +27,8 @@ route.post('/comments', async (req, res) => {
   const comment: CommentCreate = req.body;
   const user = req.session.user;
   if (!user || !isUser(user)) return res.sendStatus(400);
-  const result = await commentService.save(user.id, comment);
+  comment.userId = user.id;
+  const result = await commentService.save(comment);
   if (!result) return res.sendStatus(400);
   return res.sendStatus(200);
 });
@@ -35,15 +36,16 @@ route.post('/comments', async (req, res) => {
 route.put('/comments/:commentId', async (req, res) => {
   const commentId: number = parseInt(req.params.commentId);
   const comment: CommentUpdate = req.body;
-  if(!(await authChecker.checkUpdateAndDeleteAuth(req, commentId, commentService))) return res.sendStatus(400);
-  const result = await commentService.update(commentId, comment);
+  if (!(await authChecker.checkUpdateAndDeleteAuth(req, commentId, commentService))) return res.sendStatus(400);
+  comment.id = commentId;
+  const result = await commentService.update(comment);
   if (!result) return res.sendStatus(400);
   return res.sendStatus(200);
 });
 
 route.delete('/comments/:commentId', async (req, res) => {
   const commentId: number = parseInt(req.params.commentId);
-  if(!(await authChecker.checkUpdateAndDeleteAuth(req, commentId, commentService))) return res.sendStatus(400);
+  if (!(await authChecker.checkUpdateAndDeleteAuth(req, commentId, commentService))) return res.sendStatus(400);
   const result = await commentService.deleteById(commentId);
   if (!result) return res.sendStatus(400);
   return res.sendStatus(200);

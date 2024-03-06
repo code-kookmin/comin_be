@@ -1,6 +1,7 @@
-import { Communtiy } from '../domain/community';
+import { Communtiy } from '../domain/community/community';
 import connection from '../config/connection';
 import { FieldPacket, ResultSetHeader, RowDataPacket } from 'mysql2';
+import { CommunityUpdate } from '../domain/community/communityUpdate';
 
 interface CommuntiyRow extends RowDataPacket {
   id: number;
@@ -43,11 +44,12 @@ async function findByUserId(userId: number) {
   }
 }
 
-async function findByCategoryId(categoryId:number) {
-  const selectQuery = `SELECT * FROM community WHERE category_id=?`;
+async function findByCategoryId(categoryId: number, pageSize: number, pageNumber: number) {
+  const selectQuery = `SELECT * FROM community WHERE category_id=? LIMIT ?, ?`;
+  const selectParam = [categoryId, (pageNumber - 1) * pageSize, pageSize];
   try {
-    const [result, field] = await connection.query<[CommuntiyRow]>(selectQuery, [categoryId]);
-    return result.map((value)=>communityRowToCommunity(value))
+    const [result, field] = await connection.query<[CommuntiyRow]>(selectQuery, [selectParam]);
+    return result.map((value) => communityRowToCommunity(value));
   } catch (err) {
     console.log(err);
     return undefined;
@@ -78,9 +80,9 @@ async function deleteById(id: number) {
   }
 }
 
-async function update(id: number, community:Communtiy) {
+async function update(community: CommunityUpdate) {
   const updateQuery = `UPDATE community SET title=?, content=? WHERE id=?`;
-  const updateParam = [community.title, community.content, id];
+  const updateParam = [community.title, community.content, community.id];
   try {
     const [result, field]: [ResultSetHeader, FieldPacket[]] = await connection.query(updateQuery, updateParam);
     if (result.affectedRows === 0) return undefined;

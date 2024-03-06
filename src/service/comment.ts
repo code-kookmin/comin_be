@@ -49,16 +49,14 @@ import { ServiceLayer } from './ServiceLayer';
 //   return result;
 // };
 
-
-
 // export default commentService;
 
 export default class CommentService implements ServiceLayer {
-  findAll = async ()=>{
+  findAll = async () => {
     const result = await commentRepository.findAll();
-    if(!result) return undefined;
+    if (!result) return undefined;
     return result;
-  }
+  };
 
   findById = async (id: number) => {
     if (isNaN(id)) return undefined;
@@ -81,16 +79,16 @@ export default class CommentService implements ServiceLayer {
     return result;
   };
 
-  save = async (userId: number, comment: CommentCreate) => {
-    if (!isCommentCreate(comment) || isNaN(userId)) return undefined;
-    const result = await commentRepository.save(userId, comment);
+  save = async (comment: CommentCreate) => {
+    if (!isCommentCreate(comment)) return undefined;
+    const result = await commentRepository.save(comment);
     if (!result) return undefined;
     return result;
   };
 
-  update = async (id: number, comment: CommentUpdate) => {
-    if (!isCommentUpdate(comment) || isNaN(id)) return undefined;
-    const result = await commentRepository.update(id, comment);
+  update = async (comment: CommentUpdate) => {
+    if (!isCommentUpdate(comment)) return undefined;
+    const result = await commentRepository.update(comment);
     if (!result) return undefined;
     return result;
   };

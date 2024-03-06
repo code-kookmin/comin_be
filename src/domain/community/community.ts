@@ -22,18 +22,6 @@ export function isCommuntiy(obj: Communtiy) {
   return true;
 }
 
-export function isCommunityCreate(obj: Communtiy) {
-  if (typeof obj.categoryId !== 'number' || typeof obj.title !== 'string' || typeof obj.content !== 'string')
-    return false;
-  return true;
-}
-
-export function isCommunityUpdate(obj: Communtiy){
-  if (typeof obj.title !== 'string' || typeof obj.content !== 'string')
-    return false;
-  return true;
-}
-
 export type CommuntiyApiTspec = Tspec.DefineApiSpec<{
   tags: ['Community'];
   paths: {

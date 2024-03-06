@@ -12,7 +12,7 @@ interface CommentRow extends RowDataPacket {
   like: number;
 }
 
-const findAll = async()=>{
+const findAll = async () => {
   const selectQuery = `SELECT * FROM comment`;
   try {
     const [result, field]: [CommentRow[], FieldPacket[]] = await connection.query(selectQuery);
@@ -22,7 +22,7 @@ const findAll = async()=>{
     console.log(err);
     return undefined;
   }
-}
+};
 
 const findByCommunityId = async (communityId: number) => {
   const selectQuery = `SELECT * FROM comment WHERE community_id=?`;
@@ -60,11 +60,11 @@ const findByUserId = async (userId: number) => {
   }
 };
 
-const save = async (userId: number, comment: CommentCreate) => {
+const save = async (comment: CommentCreate) => {
   const insertQuery = `INSERT INTO comment VALUES(NULL, ?, ?, ?, 0)`;
   try {
     const [result, field]: [ResultSetHeader, FieldPacket[]] = await connection.query(insertQuery, [
-      userId,
+      comment.userId,
       comment.communityId,
       comment.content,
     ]);
@@ -76,9 +76,9 @@ const save = async (userId: number, comment: CommentCreate) => {
   }
 };
 
-const update = async (id: number, comment: CommentUpdate) => {
+const update = async (comment: CommentUpdate) => {
   const updateQuery = 'UPDATE comment SET content=?, `like`=? WHERE id=?';
-  const updateParam = [comment.content, comment.like, id];
+  const updateParam = [comment.content, comment.like, comment.id];
   try {
     const [result, field]: [ResultSetHeader, FieldPacket[]] = await connection.query(updateQuery, updateParam);
     if (result.affectedRows === 0) return undefined;

@@ -17,12 +17,12 @@ route.get('/rankings', async (req, res) => {
   return res.send(result);
 });
 
-route.get('/:userId/rankings', async (req, res)=>{
+route.get('/:userId/rankings', async (req, res) => {
   const userId = parseInt(req.params.userId);
   const roundId = req.query.roundId ? req.query.roundId : (await roundService.getCurrentRound())?.id;
   const result = await userRankingService.findByUserAndRound(userId, parseInt(roundId as string));
-  if(!result) return res.sendStatus(400)
+  if (!result) return res.sendStatus(400);
   return res.send(result);
-})
+});
 
 export default route;
