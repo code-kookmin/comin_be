@@ -1,7 +1,8 @@
-import { Communtiy } from '../domain/community/community';
-import connection from '../config/connection';
-import { FieldPacket, ResultSetHeader, RowDataPacket } from 'mysql2';
-import { CommunityUpdate } from '../domain/community/communityUpdate';
+import { Communtiy } from "../domain/community/community";
+import connection from "../config/connection";
+import { FieldPacket, ResultSetHeader, RowDataPacket } from "mysql2";
+import { CommunityUpdate } from "../domain/community/communityUpdate";
+import { CommuntiyCreate } from "../domain/community/communityCreate";
 
 interface CommuntiyRow extends RowDataPacket {
   id: number;
@@ -56,12 +57,35 @@ async function findByCategoryId(categoryId: number, pageSize: number, pageNumber
   }
 }
 
-async function save(community: Communtiy) {
-  const insertParam = [community.userId, community.categoryId, community.title, community.content, 0];
-  const insertQuery = `INSERT INTO community VALUES(NULL, ?, ?, ?, ?, ?)`;
+async function findBySubCategoryId(subcategoryId: number, pageSize: number, pageNumber: number) {
+  const selectQuery = `SELECT * FROM community WHERE subcategory_id=? LIMIT ?, ?`;
+  const selectParam = [subcategoryId, (pageNumber - 1) * pageSize, pageSize];
+  try {
+    const [result, field] = await connection.query<[CommuntiyRow]>(selectQuery, [selectParam]);
+    return result.map((value) => communityRowToCommunity(value));
+  } catch (err) {
+    console.log(err);
+    return undefined;
+  }
+}
+
+async function findByCategorySubCategoryId(categoryId: number, subcategoryId: number, pageSize: number, pageNumber: number) {
+  const selectQuery = `SELECT * FROM community WHERE category_id=? AND subcategory_id=? LIMIT ?, ?`;
+  const selectParam = [categoryId, subcategoryId, (pageNumber - 1) * pageSize, pageSize];
+  try {
+    const [result, field] = await connection.query<[CommuntiyRow]>(selectQuery, [selectParam]);
+    return result.map((value) => communityRowToCommunity(value));
+  } catch (err) {
+    console.log(err);
+    return undefined;
+  }
+}
+async function save(community: CommuntiyCreate) {
+  const insertParam = [community.userId, community.categoryId, community.subcategoryId, community.title, community.content, 0];
+  const insertQuery = `INSERT INTO community VALUES(NULL, ?, ?, ?, ?, ?, ?)`;
   try {
     const [result, field]: [ResultSetHeader, FieldPacket[]] = await connection.query(insertQuery, insertParam);
-    console.log('community create insertId : ', result.insertId);
+    console.log("community create insertId : ", result.insertId);
     return result.insertId;
   } catch (err) {
     console.log(err);
@@ -93,6 +117,15 @@ async function update(community: CommunityUpdate) {
   }
 }
 
-const communityRepository = { save, findById, deleteById, update, findByUserId, findByCategoryId };
+const communityRepository = {
+  save,
+  findById,
+  deleteById,
+  update,
+  findByUserId,
+  findByCategoryId,
+  findBySubCategoryId,
+  findByCategorySubCategoryId,
+};
 
 export default communityRepository;

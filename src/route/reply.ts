@@ -1,34 +1,34 @@
-import express from 'express';
-import { Reply, isReplyCreate, isReplyUpdate } from '../domain/reply';
-import { isUser } from '../domain/user/user';
-import ReplyService from '../service/reply';
-import { authChecker } from '../util/authChecker';
+import express from "express";
+import { Reply, isReplyCreate, isReplyUpdate } from "../domain/reply";
+import { isUser } from "../domain/user";
+import ReplyService from "../service/reply";
+import { authChecker } from "../util/authChecker";
 
 const route = express.Router();
-const replyService = new ReplyService;
+const replyService = new ReplyService();
 
-route.get('/:id', async (req, res) => {
+route.get("/:id", async (req, res) => {
   const id = parseInt(req.params.id);
   const result = await replyService.findById(id);
   if (!result) return res.sendStatus(400);
   return res.send(result);
 });
 
-route.get('/comments/:id', async (req, res) => {
+route.get("/comments/:id", async (req, res) => {
   const id = parseInt(req.params.id);
   const result = await replyService.findByCommentId(id);
   if (!result) return res.sendStatus(400);
   return res.send(result);
 });
 
-route.get('/users/:id', async (req, res) => {
+route.get("/users/:id", async (req, res) => {
   const id = parseInt(req.params.id);
   const result = await replyService.findByUserId(id);
   if (!result) return res.sendStatus(400);
   return res.send(result);
 });
 
-route.post('/', async (req, res) => {
+route.post("/", async (req, res) => {
   const reply: Reply = req.body;
   const user = req.session.user;
   if (!user || !isUser(user)) return res.sendStatus(400);
@@ -38,7 +38,7 @@ route.post('/', async (req, res) => {
   return res.sendStatus(200);
 });
 
-route.put('/:id', async (req, res) => {
+route.put("/:id", async (req, res) => {
   const id = parseInt(req.params.id);
   const reply: Reply = req.body;
   if (!(await authChecker.checkUpdateAndDeleteAuth(req, id, replyService))) return res.sendStatus(400);
@@ -47,7 +47,7 @@ route.put('/:id', async (req, res) => {
   return res.sendStatus(200);
 });
 
-route.delete('/:id', async (req, res) => {
+route.delete("/:id", async (req, res) => {
   const id = parseInt(req.params.id);
   if (!(await authChecker.checkUpdateAndDeleteAuth(req, id, replyService))) return res.sendStatus(400);
   const result = await replyService.deleteById(id);

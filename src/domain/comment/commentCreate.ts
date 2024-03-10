@@ -7,9 +7,9 @@ export interface CommentCreate {
 
 export function isCommentCreate(comment: CommentCreate) {
   if (
-    typeof comment.userId !== 'number' ||
-    typeof comment.communityId !== 'number' ||
-    typeof comment.content !== 'number'
+    typeof comment.userId !== "number" ||
+    typeof comment.communityId !== "number" ||
+    typeof comment.content !== "number"
   )
     return false;
   return true;
