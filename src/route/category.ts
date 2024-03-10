@@ -22,17 +22,4 @@ route.get("/subcategory/:subcategoryId/community", async (req, res) => {
   return res.send(result);
 });
 
-route.get("/:categoryId/subcategory/:subcategoryId/community", async (req, res) => {
-  const pageSize = req.query.pageSize ? req.query.pageSize : 20;
-  const pageNumber = req.query.pageNumber ? req.query.pageNumber : 1;
-  const categoryId = parseInt(req.params.categoryId);
-  const subcategoryId = parseInt(req.params.subcategoryId);
-  const result = await communityService.findByCategorySubCategoryId(
-    categoryId,
-    subcategoryId,
-    parseInt(pageSize as string),
-    parseInt(pageNumber as string)
-  );
-  if (!result) return res.sendStatus(400);
-  return res.send(result);
-});
+export default route;

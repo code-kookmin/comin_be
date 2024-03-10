@@ -1,9 +1,8 @@
-import { Tspec } from 'tspec';
+import { Tspec } from "tspec";
 
 export interface Communtiy {
   id: number;
   userId: number;
-  categoryId: number;
   subcategoryId: number;
   title: string;
   content: string;
@@ -12,34 +11,33 @@ export interface Communtiy {
 
 export function isCommuntiy(obj: Communtiy) {
   if (
-    typeof obj.id !== 'number' ||
-    typeof obj.categoryId !== 'number' ||
-    typeof obj.subcategoryId !== 'number' ||
-    typeof obj.userId !== 'number' ||
-    typeof obj.title !== 'string' ||
-    typeof obj.content !== 'string' ||
-    typeof obj.like !== 'number'
+    typeof obj.id !== "number" ||
+    typeof obj.subcategoryId !== "number" ||
+    typeof obj.userId !== "number" ||
+    typeof obj.title !== "string" ||
+    typeof obj.content !== "string" ||
+    typeof obj.like !== "number"
   )
     return false;
   return true;
 }
 
 export type CommuntiyApiTspec = Tspec.DefineApiSpec<{
-  tags: ['Community'];
+  tags: ["Community"];
   paths: {
-    '/community/{id}': {
+    "/community/{id}": {
       get: {
-        summary: '게시물 조회';
+        summary: "게시물 조회";
         path: { id: number };
         responses: { 200: Communtiy };
       };
       delete: {
-        summary: '게시물 삭제';
+        summary: "게시물 삭제";
         path: { id: number };
         responses: { 200: string };
       };
       put: {
-        summary: '게시물 수정';
+        summary: "게시물 수정";
         path: { id: number };
         body: {
           title: string;
@@ -48,9 +46,9 @@ export type CommuntiyApiTspec = Tspec.DefineApiSpec<{
         responses: { 200: string };
       };
     };
-    '/community': {
+    "/community": {
       post: {
-        summary: '게시물 생성';
+        summary: "게시물 생성";
         body: {
           categoryId: number;
           title: string;

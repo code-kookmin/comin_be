@@ -16,7 +16,6 @@ interface CommuntiyRow extends RowDataPacket {
 function communityRowToCommunity(obj: CommuntiyRow) {
   return {
     userId: obj.user_id,
-    categoryId: obj.category_id,
     title: obj.title,
     content: obj.content,
     like: obj.like,
@@ -46,10 +45,16 @@ async function findByUserId(userId: number) {
 }
 
 async function findByCategoryId(categoryId: number, pageSize: number, pageNumber: number) {
-  const selectQuery = `SELECT * FROM community WHERE category_id=? LIMIT ?, ?`;
+  const selectQuery = `
+    SELECT com.* FROM community com 
+    INNER JOIN subcategory sub ON com.subcategory_id=sub.id 
+    INNER JOIN category cat ON sub.category_id=cat.id
+    WHERE cat.id = ?
+    LIMIT ?, ?
+  `;
   const selectParam = [categoryId, (pageNumber - 1) * pageSize, pageSize];
   try {
-    const [result, field] = await connection.query<[CommuntiyRow]>(selectQuery, [selectParam]);
+    const [result, field] = await connection.query<[CommuntiyRow]>(selectQuery, selectParam);
     return result.map((value) => communityRowToCommunity(value));
   } catch (err) {
     console.log(err);
@@ -69,20 +74,9 @@ async function findBySubCategoryId(subcategoryId: number, pageSize: number, page
   }
 }
 
-async function findByCategorySubCategoryId(categoryId: number, subcategoryId: number, pageSize: number, pageNumber: number) {
-  const selectQuery = `SELECT * FROM community WHERE category_id=? AND subcategory_id=? LIMIT ?, ?`;
-  const selectParam = [categoryId, subcategoryId, (pageNumber - 1) * pageSize, pageSize];
-  try {
-    const [result, field] = await connection.query<[CommuntiyRow]>(selectQuery, [selectParam]);
-    return result.map((value) => communityRowToCommunity(value));
-  } catch (err) {
-    console.log(err);
-    return undefined;
-  }
-}
 async function save(community: CommuntiyCreate) {
-  const insertParam = [community.userId, community.categoryId, community.subcategoryId, community.title, community.content, 0];
-  const insertQuery = `INSERT INTO community VALUES(NULL, ?, ?, ?, ?, ?, ?)`;
+  const insertParam = [community.userId, community.subcategoryId, community.title, community.content, 0];
+  const insertQuery = `INSERT INTO community VALUES(NULL, ?, ?, ?, ?, ?)`;
   try {
     const [result, field]: [ResultSetHeader, FieldPacket[]] = await connection.query(insertQuery, insertParam);
     console.log("community create insertId : ", result.insertId);
@@ -125,7 +119,6 @@ const communityRepository = {
   findByUserId,
   findByCategoryId,
   findBySubCategoryId,
-  findByCategorySubCategoryId,
 };
 
 export default communityRepository;

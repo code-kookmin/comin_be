@@ -37,15 +37,6 @@ export default class CommunityService implements ServiceLayer {
     return result;
   };
 
-  findByCategorySubCategoryId = async (categoryId: number, subcategoryId: number, pageSize: number, pageNumber: number) => {
-    if (isNaN(categoryId) || isNaN(subcategoryId) || isNaN(pageSize) || isNaN(pageNumber)) return undefined;
-    if (!(await categoryRepository.findCategoryById(categoryId))) return undefined;
-    if (!(await subcategoryRepository.findById(subcategoryId))) return undefined;
-    const result = await communityRepository.findByCategorySubCategoryId(categoryId, subcategoryId, pageSize, pageNumber);
-    if (!result) return undefined;
-    return result;
-  };
-
   update = async function update(community: CommunityUpdate) {
     if (!isCommunityUpdate(community)) return undefined;
     const result = await communityRepository.update(community);
