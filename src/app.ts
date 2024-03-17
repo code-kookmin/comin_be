@@ -10,6 +10,7 @@ import UserRankingRoute from "./route/userRanking";
 import ProblemRoute from "./route/problem";
 import AdminRoute from "./route/admin";
 import CategoryRoute from "./route/category";
+import ImageRoute from "./route/images";
 import morgan from "morgan";
 import cors from "cors";
 import cookieParser from "cookie-parser";
@@ -19,6 +20,7 @@ import schedule from "node-schedule";
 import { User } from "./domain/user";
 import { updateRatingAndRanking } from "./util/updateRankingAndRating";
 import { updateAndInitRound } from "./util/updateAndInitRound";
+
 declare module "express-session" {
   export interface SessionData {
     user: User;
@@ -62,7 +64,7 @@ app.use("/admin", AdminRoute);
 app.use("/user", UserRoute, UserRankingRoute);
 app.use("/community", communityRoute, commentRoute);
 app.use("/category", CategoryRoute);
-// app.use('/comments', commentRoute);
+app.use("/image", ImageRoute);
 app.use("/reply", ReplyRoute);
 app.get("/", (req: Request, res: Response) => {
   res.sendStatus(418);
