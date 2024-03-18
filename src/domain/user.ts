@@ -1,4 +1,4 @@
-import { Tspec } from 'tspec';
+import { Tspec } from "tspec";
 
 export interface User {
   id: number;
@@ -13,12 +13,12 @@ export interface User {
 
 export function isUserCreate(obj: any): obj is User {
   if (
-    typeof obj.email !== 'string' ||
-    typeof obj.password !== 'string' ||
-    typeof obj.name !== 'string' ||
-    typeof obj.birthday !== 'string' ||
-    typeof obj.githubName !== 'string' ||
-    typeof obj.baekjoonName !== 'string'
+    typeof obj.email !== "string" ||
+    typeof obj.password !== "string" ||
+    typeof obj.name !== "string" ||
+    typeof obj.birthday !== "string" ||
+    typeof obj.githubName !== "string" ||
+    typeof obj.baekjoonName !== "string"
   ) {
     return false;
   }
@@ -27,14 +27,14 @@ export function isUserCreate(obj: any): obj is User {
 
 export function isUser(obj: any): obj is User {
   if (
-    typeof obj.id !== 'number' ||
-    typeof obj.email !== 'string' ||
-    typeof obj.password !== 'string' ||
-    typeof obj.name !== 'string' ||
-    typeof obj.birthday !== 'string' ||
-    typeof obj.githubName !== 'string' ||
-    typeof obj.baekjoonName !== 'string' ||
-    typeof obj.role !== 'number'
+    typeof obj.id !== "number" ||
+    typeof obj.email !== "string" ||
+    typeof obj.password !== "string" ||
+    typeof obj.name !== "string" ||
+    typeof obj.birthday !== "string" ||
+    typeof obj.githubName !== "string" ||
+    typeof obj.baekjoonName !== "string" ||
+    typeof obj.role !== "number"
   ) {
     return false;
   }
@@ -42,38 +42,38 @@ export function isUser(obj: any): obj is User {
 }
 
 export type userApiTspec = Tspec.DefineApiSpec<{
-  tags: ['User'];
+  tags: ["User"];
   paths: {
-    '/user/login': {
+    "/user/login": {
       get: {
-        summary: '사용자 로그인 로그인 상태의 유저면 req.session.user 로 유저 객체 가져올 수 있음';
+        summary: "사용자 로그인 로그인 상태의 유저면 req.session.user 로 유저 객체 가져올 수 있음";
         query: { email: string; passWord: string };
         responses: { 200: string };
       };
     };
-    '/user/logout': {
+    "/user/logout": {
       get: {
-        summary: '사용자 세션 종료 후 로그아웃';
+        summary: "사용자 세션 종료 후 로그아웃";
         responses: { 200: string };
       };
     };
-    '/user/signin': {
+    "/user/signin": {
       post: {
-        summary: '사용자 로그인';
+        summary: "사용자 회원가입";
         body: User;
         responses: { 200: string };
       };
     };
-    '/user/password': {
+    "/user/password": {
       get: {
-        summary: '사용자 비밀번호 조회';
+        summary: "사용자 비밀번호 조회";
         query: { email: string };
         responses: { 200: string };
       };
     };
-    '/user/profile': {
+    "/user/profile": {
       put: {
-        summary: '사용자 프로필 수정';
+        summary: "사용자 프로필 수정";
         body: User;
         responses: { 200: string };
       };
