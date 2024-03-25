@@ -1,7 +1,7 @@
-import { Request, Response, NextFunction } from "express";
-import { ServiceLayer } from "../service/ServiceLayer";
-import { isUser } from "../domain/user";
-import { Role, roleToNumber } from "../domain/role";
+import { Request, Response, NextFunction } from 'express';
+import { ServiceLayer } from '../service/ServiceLayer';
+import { isUser, isUserCreate } from '../domain/user';
+import { Role, roleToNumber } from '../domain/role';
 
 // 현재 세션 유저의 특정 데이터의 수정/삭제 권한 확인
 // 만약 admin 계정이라면, 사용자 동일여부를 무시하고 권한을 인정한다.
@@ -20,8 +20,8 @@ async function checkSaveDataAuth(req: Request) {
 }
 
 async function checkSaveUserAuth(req: Request) {
-  if (isUser(req.session.user) && req.session.user.role === roleToNumber(Role.ROLE_ADMIN)) return true;
   if (!req.session.user) return true;
+  if (req.session.user.role === roleToNumber(Role.ROLE_ADMIN)) return true;
   return undefined;
 }
 

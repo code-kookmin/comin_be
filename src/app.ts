@@ -1,5 +1,4 @@
 import express, { Request, Response } from 'express';
-import dotenv from 'dotenv';
 import helloRoute from '../src/route/hello';
 import WeeklyProblemRoute from './route/weeklyProblem';
 import UserRoute from './route/user';
@@ -20,16 +19,15 @@ import schedule from 'node-schedule';
 import { User } from './domain/user';
 import { updateRatingAndRanking } from './util/updateRankingAndRating';
 import { updateAndInitRound } from './util/updateAndInitRound';
-// import { socketIO } from './socket/socketIO.mjs';
+import dotenv from 'dotenv';
+dotenv.config();
 
 declare module 'express-session' {
   export interface SessionData {
     user: User;
-    admin: Boolean;
   }
 }
 
-dotenv.config();
 schedule.scheduleJob('0 0 0 * * *', async () => {
   await updateRatingAndRanking();
 });

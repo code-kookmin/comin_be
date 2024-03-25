@@ -1,10 +1,13 @@
-import { Role, roleToNumber } from "../domain/role";
-import { User, isUser, isUserCreate } from "../domain/user";
-import userRepository from "../repository/user";
-import { getHashedPassword } from "../util/hashPassword";
-import { ServiceLayer } from "./ServiceLayer";
+import { Role, roleToNumber } from '../domain/role';
+import { User, isUser, isUserCreate } from '../domain/user';
+import userRepository from '../repository/user';
+import { getHashedPassword } from '../util/hashPassword';
+import { ServiceLayer } from './ServiceLayer';
+import BojService from './boj';
 
 export default class UserService implements ServiceLayer {
+  bojService = new BojService();
+
   findAll = async () => {
     const result = await userRepository.findAll();
     if (!result) return undefined;
@@ -19,12 +22,12 @@ export default class UserService implements ServiceLayer {
   };
 
   findByEmail = async (email: string) => {
-    if (typeof email !== "string") return undefined;
+    if (typeof email !== 'string') return undefined;
     return await userRepository.findByEmail(email);
   };
 
   findPassword = async (email: string) => {
-    if (typeof email !== "string") return undefined;
+    if (typeof email !== 'string') return undefined;
     const result: User | undefined = await userRepository.findByEmail(email);
     return result?.password;
   };
@@ -46,9 +49,11 @@ export default class UserService implements ServiceLayer {
 
   save = async (user: User) => {
     if (!isUserCreate(user)) return undefined;
-    const result = await userRepository.findByEmail(user.email);
-    if (result) return undefined;
+    if (await userRepository.findByEmail(user.email)) return undefined;
     user.password = await getHashedPassword(user.password);
+    const bojUserInfo = await this.bojService.findUserByUserid(user.baekjoonName);
+    if (bojUserInfo) user.profileImage = bojUserInfo.profileImageUrl;
+    console.log(user);
     const queryResult = await userRepository.save(user);
     return queryResult;
   };

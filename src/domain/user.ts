@@ -8,6 +8,7 @@ export interface User {
   birthday: string;
   githubName: string;
   baekjoonName: string;
+  profileImage?: string;
   role?: number;
 }
 
