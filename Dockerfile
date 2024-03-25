@@ -4,6 +4,7 @@ WORKDIR /app
 
 #npm install 을 위해, package.json과 package-lock.json을 먼저 copy해둠
 COPY package*.json .
+COPY .env .
 
 RUN npm install
 
