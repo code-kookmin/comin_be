@@ -26,6 +26,7 @@ async function findById(id: number) {
   const selectQuery = `SELECT * FROM community WHERE id=?`;
   try {
     const [[result], field] = await connection.query<[CommuntiyRow]>(selectQuery, [id]);
+    if (!result) return undefined;
     return communityRowToCommunity(result);
   } catch (err) {
     console.log(err);

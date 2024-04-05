@@ -1,7 +1,5 @@
 import { DeleteObjectRequest, PutObjectRequest } from "aws-sdk/clients/s3";
-import dotenv from "dotenv";
 import { s3 } from "../config/s3Config";
-dotenv.config();
 
 export default class ImageS3Service {
   checkImageExist = async (key: string | undefined) => {

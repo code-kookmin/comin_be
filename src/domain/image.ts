@@ -1,25 +1,26 @@
-import { Tspec } from 'tspec';
+import { Tspec } from "tspec";
 
 export type ImageApiTspec = Tspec.DefineApiSpec<{
-  tags: ['image'];
+  tags: ["image"];
   paths: {
-    '/image': {
+    "/image": {
       post: {
-        summary: 'upload image';
+        summary: "upload image";
         /** @mediaType multipart/form-data */
         body: {
           image: Tspec.BinaryString;
+          key: string;
         };
         responses: {
           200: string;
         };
       };
     };
-    '/image/{imageId}': {
-      delete: {
-        summary: 'delete image';
+    "/image/{imageKey}": {
+      post: {
+        summary: "delete image";
         path: {
-          imageId: number;
+          imageKey: string;
         };
         responses: {
           200: string;
