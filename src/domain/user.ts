@@ -45,6 +45,13 @@ export function isUser(obj: any): obj is User {
 export type userApiTspec = Tspec.DefineApiSpec<{
   tags: ['User'];
   paths: {
+    '/user': {
+      get: {
+        summary: '사용자 전체 조회';
+        query: { pageSize?: number; pageNumber?: number };
+        responses: { 200: User };
+      };
+    };
     '/user/login': {
       get: {
         summary: '사용자 로그인 로그인 상태의 유저면 req.session.user 로 유저 객체 가져올 수 있음';

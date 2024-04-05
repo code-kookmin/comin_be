@@ -1,12 +1,18 @@
-import { Communtiy } from "../domain/community/community";
-import { CommuntiyCreate, isCommunityCreate } from "../domain/community/communityCreate";
-import { CommunityUpdate, isCommunityUpdate } from "../domain/community/communityUpdate";
-import categoryRepository from "../repository/category";
-import communityRepository from "../repository/community";
-import subcategoryRepository from "../repository/subcategory";
-import { ServiceLayer } from "./ServiceLayer";
+import { Communtiy } from '../domain/community/community';
+import { CommuntiyCreate, isCommunityCreate } from '../domain/community/communityCreate';
+import { CommunityUpdate, isCommunityUpdate } from '../domain/community/communityUpdate';
+import categoryRepository from '../repository/category';
+import communityRepository from '../repository/community';
+import subcategoryRepository from '../repository/subcategory';
+import { ServiceLayer } from './ServiceLayer';
 
 export default class CommunityService implements ServiceLayer {
+  findAllByPage = async (pageSize: number, pageNumber: number) => {
+    const result = await communityRepository.findAllByPage(pageSize, pageNumber);
+    if (!result) return undefined;
+    return result;
+  };
+
   findById = async function findById(id: number) {
     if (isNaN(id)) return undefined;
     const result = await communityRepository.findById(id);

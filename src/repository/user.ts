@@ -122,5 +122,23 @@ async function findAll() {
   }
 }
 
-const userRepository = { findByEmail, findAll, findById, save, update, updateRole };
+async function findAllByPage(pageSize: number, pageNumber: number) {
+  const selectQuery = 'SELECT * FROM user LIMIT ?, ?';
+  const selectParam = [pageSize * (pageNumber - 1), pageNumber];
+  try {
+    const returnArray: User[] = [];
+    const [result, field] = await connection.query<[UserRow]>(selectQuery, selectParam);
+    if (!result) return undefined;
+    for (let i = 0; i < result.length; i++) {
+      const user = UserRowToUser(result[i]);
+      if (user) returnArray.push(user);
+    }
+    return returnArray;
+  } catch (err) {
+    console.log(err);
+    return undefined;
+  }
+}
+
+const userRepository = { findByEmail, findAll, findAllByPage, findById, save, update, updateRole };
 export default userRepository;

@@ -26,6 +26,11 @@ export type CommentApiTspec = Tspec.DefineApiSpec<{
   tags: ['Comment'];
   paths: {
     '/community/comments': {
+      get: {
+        summary: '댓글 전체 조회';
+        query: { pageSize?: number; pageNumber?: number };
+        responses: { 200: Comment };
+      };
       post: {
         summary: '댓글 생성';
         body: CommentCreate;

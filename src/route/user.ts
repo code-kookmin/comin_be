@@ -7,11 +7,20 @@ import CommentService from '../service/comment';
 import { authChecker } from '../util/authChecker';
 import { Role, numberToRole, roleToNumber } from '../domain/role';
 import { getHashedPassword } from '../util/hashPassword';
+import { parse } from 'path';
 
 const route = express.Router();
 const userService = new UserService();
 const communityService = new CommunityService();
 const commentService = new CommentService();
+
+route.get('/', async (req, res) => {
+  const pageSize = req.query.pageSize ? req.query.pageSize : 20;
+  const pageNumber = req.query.pageNumber ? req.query.pageNumber : 1;
+  const result = await userService.findAllByPage(parseInt(pageSize as string), parseInt(pageNumber as string));
+  if (!result) return res.sendStatus(400);
+  return res.send(result);
+});
 
 route.get('/login', async (req, res) => {
   if (typeof req.query.email != 'string' || typeof req.query.passWord != 'string') return res.sendStatus(400);

@@ -12,10 +12,11 @@ interface CommentRow extends RowDataPacket {
   like: number;
 }
 
-const findAll = async () => {
-  const selectQuery = `SELECT * FROM comment`;
+const findAllByPage = async (pageSize: number, pageNumber: number) => {
+  const selectQuery = `SELECT * FROM comment LIMIT ?,?`;
+  const selectParam = [(pageNumber - 1) * pageSize, pageSize];
   try {
-    const [result, field]: [CommentRow[], FieldPacket[]] = await connection.query(selectQuery);
+    const [result, field]: [CommentRow[], FieldPacket[]] = await connection.query(selectQuery, selectParam);
     if (!result[0]) return undefined;
     return result;
   } catch (err) {
@@ -102,7 +103,7 @@ const deleteById = async (id: number) => {
 };
 
 const commentRepository = {
-  findAll,
+  findAllByPage,
   findById,
   findByCommunityId,
   findByUserId,

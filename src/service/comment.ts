@@ -1,11 +1,11 @@
-import { CommentCreate, isCommentCreate } from "../domain/comment/commentCreate";
-import { CommentUpdate, isCommentUpdate } from "../domain/comment/commentUpdate";
-import commentRepository from "../repository/comment";
-import { ServiceLayer } from "./ServiceLayer";
+import { CommentCreate, isCommentCreate } from '../domain/comment/commentCreate';
+import { CommentUpdate, isCommentUpdate } from '../domain/comment/commentUpdate';
+import commentRepository from '../repository/comment';
+import { ServiceLayer } from './ServiceLayer';
 
 export default class CommentService implements ServiceLayer {
-  findAll = async () => {
-    const result = await commentRepository.findAll();
+  findAllByPage = async (pageSize: number, pageNumber: number) => {
+    const result = await commentRepository.findAllByPage(pageSize, pageNumber);
     if (!result) return undefined;
     return result;
   };

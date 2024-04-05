@@ -59,14 +59,26 @@ export default class BojService {
       // 문제 제목 추출
       const problemTitle = $('#problem_title').text().trim();
       // 문제 설명 추출
-      const problemDescriptions: String[] = [];
-      $('#problem_description p').each(function (this: any) {
+      const problemDescriptions: (string[] | string)[] = [];
+      $('#problem_description p, #problem_description table').each(function (this: any) {
         let content: string = '';
-        if ($(this).find('img').length > 0) {
-          content = $(this).find('img').attr('src') as string;
-          content = content.startsWith('http') ? content : new URL(content, baseURL).href;
-        } else {
-          content = $(this).text();
+        if ($(this).is('p')) {
+          if ($(this).find('img').length > 0) {
+            content = $(this).find('img').attr('src') as string;
+            content = content.startsWith('http') ? content : new URL(content, baseURL).href;
+          } else {
+            content = $(this).text();
+          }
+        } else if ($(this).is('table')) {
+          const images: string[] = [];
+          $(this)
+            .find('img')
+            .each(function (this: any) {
+              const src = $(this).attr('src');
+              console.log(src);
+              images.push(src as string);
+            });
+          problemDescriptions.push(images);
         }
         if (content !== '') problemDescriptions.push(content);
       });

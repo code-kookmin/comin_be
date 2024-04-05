@@ -19,7 +19,7 @@ function UserRankingRowToUserRanking(obj: UserRankingRow) {
     roundId: obj.round_id,
     totalSolved: obj.total_solved,
     totalSolvedWeight: obj.total_solved_weight,
-    tier: obj.tier
+    tier: obj.tier,
   } as UserRanking;
 }
 
@@ -36,17 +36,17 @@ async function save(ranking: UserRankingCreate) {
   }
 }
 
-async function update(ranking:UserRankingCreate) {
-  const updateQuery = 'UPDATE user_ranking SET total_solved=?, total_solved_weight=?, tier=? WHERE user_id=? AND round_id=?';
+async function update(ranking: UserRankingCreate) {
+  const updateQuery =
+    'UPDATE user_ranking SET total_solved=?, total_solved_weight=?, tier=? WHERE user_id=? AND round_id=?';
   const updateParam = [ranking.totalSolved, ranking.totalSolvedWeight, ranking.tier, ranking.userId, ranking.roundId];
-  try{
+  try {
     const [result, field]: [ResultSetHeader, FieldPacket[]] = await connection.query(updateQuery, updateParam);
     return result.affectedRows;
-  }catch(err){
+  } catch (err) {
     console.log(err);
     return undefined;
   }
-  
 }
 async function findByUserAndRound(userId: number, roundId: number) {
   const selectQuery = 'SELECT * FROM user_ranking WHERE user_id=? AND round_id=?';
@@ -63,7 +63,7 @@ async function findByUserAndRound(userId: number, roundId: number) {
 
 async function findOrderedBySolvedCount(roundId: number, pageSize: number, pageNumber: number) {
   // LIMIT a, b : (a+1)번째부터 b개 추출
-  const selectQuery = 'SELECT * FROM user_ranking WHERE round_id=? ORDER BY total_solved LIMIT ?, ?';
+  const selectQuery = 'SELECT * FROM user_ranking WHERE round_id=? ORDER BY total_solved DESC LIMIT ?, ?';
   const selectParam = [roundId, (pageNumber - 1) * pageSize, pageSize];
   try {
     const [result, field] = await connection.query<[UserRankingRow]>(selectQuery, selectParam);
@@ -75,4 +75,24 @@ async function findOrderedBySolvedCount(roundId: number, pageSize: number, pageN
   }
 }
 
-export const userRankingRepository = { save, update, findByUserAndRound, findOrderedBySolvedCount };
+async function findOrderedBySolvedCountWeight(roundId: number, pageSize: number, pageNumber: number) {
+  // LIMIT a, b : (a+1)번째부터 b개 추출
+  const selectQuery = 'SELECT * FROM user_ranking WHERE round_id=? ORDER BY total_solved_weight DESC LIMIT ?, ?';
+  const selectParam = [roundId, (pageNumber - 1) * pageSize, pageSize];
+  try {
+    const [result, field] = await connection.query<[UserRankingRow]>(selectQuery, selectParam);
+    if (!result[0]) return undefined;
+    return result.map((value) => UserRankingRowToUserRanking(value));
+  } catch (err) {
+    console.log(err);
+    return undefined;
+  }
+}
+
+export const userRankingRepository = {
+  save,
+  update,
+  findByUserAndRound,
+  findOrderedBySolvedCount,
+  findOrderedBySolvedCountWeight,
+};

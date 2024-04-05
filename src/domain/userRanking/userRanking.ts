@@ -1,4 +1,4 @@
-import { Tspec } from "tspec";
+import { Tspec } from 'tspec';
 
 export interface UserRanking {
   id: number;
@@ -25,20 +25,27 @@ export function isUserRanking(obj: UserRanking) {
 export type UserRankingApiTspec = Tspec.DefineApiSpec<{
   tags: ['UserRanking'];
   paths: {
-    '/user/rankings':{
+    '/user/rankings/solved': {
       get: {
-        summary: '특정 라운드의 전체 사용자 목록을 랭킹 순으로 반환';
-        query: { pageSize?: number; pageNumber?: number; roundId?:number };
+        summary: '특정 라운드의 전체 사용자 목록을 푼 문제 순으로 반환';
+        query: { pageSize?: number; pageNumber?: number; roundId?: number };
         responses: { 200: string };
       };
-    },
-    '/user/{userId}/rankings':{
+    };
+    '/user/rankings/weight': {
       get: {
-        summary: '특정 라운드의 전체 사용자 목록을 랭킹 순으로 반환';
-        path: {userId:number};
-        query: { roundId?:number };
+        summary: '특정 라운드의 전체 사용자 목록을 푼 문제의 가중차 함 순으로 반환';
+        query: { pageSize?: number; pageNumber?: number; roundId?: number };
         responses: { 200: string };
       };
-    }
+    };
+    '/user/{userId}/rankings': {
+      get: {
+        summary: '특정 라운드의 전체 사용자 목록을 랭킹 순으로 반환';
+        path: { userId: number };
+        query: { roundId?: number };
+        responses: { 200: string };
+      };
+    };
   };
 }>;

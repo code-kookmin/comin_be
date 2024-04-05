@@ -14,6 +14,12 @@ export default class UserService implements ServiceLayer {
     return result;
   };
 
+  findAllByPage = async (pageSize: number, pageNumber: number) => {
+    const result = await userRepository.findAllByPage(pageSize, pageNumber);
+    if (!result) return undefined;
+    return result;
+  };
+
   findById = async (id: number) => {
     if (isNaN(id)) return undefined;
     const result = await userRepository.findById(id);

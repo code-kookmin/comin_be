@@ -29,4 +29,17 @@ async function findOrderedBySolvedCount(roundId: number, pageSize: number, pageN
   return result;
 }
 
-export const userRankingService = { save, update, findByUserAndRound, findOrderedBySolvedCount };
+async function findOrderedBySolvedCountWeight(roundId: number, pageSize: number, pageNumber: number) {
+  if (isNaN(roundId) || isNaN(pageSize) || isNaN(pageNumber)) return undefined;
+  const result = await userRankingRepository.findOrderedBySolvedCountWeight(roundId, pageSize, pageNumber);
+  if (!result) return undefined;
+  return result;
+}
+
+export const userRankingService = {
+  save,
+  update,
+  findByUserAndRound,
+  findOrderedBySolvedCount,
+  findOrderedBySolvedCountWeight,
+};

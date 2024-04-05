@@ -1,13 +1,14 @@
-import { Communtiy } from "../domain/community/community";
-import connection from "../config/connection";
-import { FieldPacket, ResultSetHeader, RowDataPacket } from "mysql2";
-import { CommunityUpdate } from "../domain/community/communityUpdate";
-import { CommuntiyCreate } from "../domain/community/communityCreate";
+import { Communtiy } from '../domain/community/community';
+import connection from '../config/connection';
+import { FieldPacket, ResultSetHeader, RowDataPacket } from 'mysql2';
+import { CommunityUpdate } from '../domain/community/communityUpdate';
+import { CommuntiyCreate } from '../domain/community/communityCreate';
+import { val } from 'cheerio/lib/api/attributes';
 
 interface CommuntiyRow extends RowDataPacket {
   id: number;
   user_id: number;
-  category_id: number;
+  subcategory_id: number;
   title: string;
   content: string;
   like: number;
@@ -15,11 +16,26 @@ interface CommuntiyRow extends RowDataPacket {
 
 function communityRowToCommunity(obj: CommuntiyRow) {
   return {
+    id: obj.id,
     userId: obj.user_id,
+    subcategoryId: obj.subcategory_id,
     title: obj.title,
     content: obj.content,
     like: obj.like,
   } as Communtiy;
+}
+
+async function findAllByPage(pageSize: number, pageNumber: number) {
+  const selectQuery = `SELECT * FROM community LIMIT ?, ?`;
+  const selectParam = [(pageNumber - 1) * pageSize, pageSize];
+  try {
+    const [result, field] = await connection.query<[CommuntiyRow]>(selectQuery, selectParam);
+    if (!result) return undefined;
+    return result.map((value) => communityRowToCommunity(value));
+  } catch (err) {
+    console.log(err);
+    return undefined;
+  }
 }
 
 async function findById(id: number) {
@@ -79,7 +95,7 @@ async function save(community: CommuntiyCreate) {
   const insertQuery = `INSERT INTO community VALUES(NULL, ?, ?, ?, ?, ?)`;
   try {
     const [result, field]: [ResultSetHeader, FieldPacket[]] = await connection.query(insertQuery, insertParam);
-    console.log("community create insertId : ", result.insertId);
+    console.log('community create insertId : ', result.insertId);
     return result.insertId;
   } catch (err) {
     console.log(err);
@@ -113,6 +129,7 @@ async function update(community: CommunityUpdate) {
 
 const communityRepository = {
   save,
+  findAllByPage,
   findById,
   deleteById,
   update,
