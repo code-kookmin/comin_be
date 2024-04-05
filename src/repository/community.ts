@@ -3,31 +3,60 @@ import connection from "../config/connection";
 import { FieldPacket, ResultSetHeader, RowDataPacket } from "mysql2";
 import { CommunityUpdate } from "../domain/community/communityUpdate";
 import { CommuntiyCreate } from "../domain/community/communityCreate";
+import { val } from "cheerio/lib/api/attributes";
+import { CommuntiyResponse } from "../domain/community/communityResponse";
 
-interface CommuntiyRow extends RowDataPacket {
+interface CommuntiyResponseRow extends RowDataPacket {
   id: number;
   user_id: number;
-  category_id: number;
+  subcategory_id: number;
   title: string;
   content: string;
   like: number;
+  comments_count: number;
 }
 
-function communityRowToCommunity(obj: CommuntiyRow) {
+function communityResponseRowToCommunityResponse(obj: CommuntiyResponseRow) {
   return {
+    id: obj.id,
     userId: obj.user_id,
+    subcategoryId: obj.subcategory_id,
     title: obj.title,
     content: obj.content,
     like: obj.like,
-  } as Communtiy;
+    commentsCount: obj.comments_count,
+  } as CommuntiyResponse;
+}
+
+async function findAllByPage(pageSize: number, pageNumber: number) {
+  const selectQuery = `
+    SELECT id, user_id, subcategory_id, title, content, \`like\`,
+    (SELECT COUNT(*) FROM comment c WHERE c.community_id = com.id) comments_count
+    FROM community com
+    LIMIT ?, ?
+  `;
+  const selectParam = [(pageNumber - 1) * pageSize, pageSize];
+  try {
+    const [result, field] = await connection.query<[CommuntiyResponseRow]>(selectQuery, selectParam);
+    if (!result) return undefined;
+    return result.map((value) => communityResponseRowToCommunityResponse(value));
+  } catch (err) {
+    console.log(err);
+    return undefined;
+  }
 }
 
 async function findById(id: number) {
-  const selectQuery = `SELECT * FROM community WHERE id=?`;
+  const selectQuery = `
+    SELECT id, user_id, subcategory_id, title, content, \`like\`,
+    (SELECT COUNT(*) FROM comment c WHERE c.community_id = com.id) comments_count
+    FROM community com
+    WHERE id=?
+  `;
   try {
-    const [[result], field] = await connection.query<[CommuntiyRow]>(selectQuery, [id]);
+    const [[result], field] = await connection.query<[CommuntiyResponseRow]>(selectQuery, [id]);
     if (!result) return undefined;
-    return communityRowToCommunity(result);
+    return communityResponseRowToCommunityResponse(result);
   } catch (err) {
     console.log(err);
     return undefined;
@@ -35,10 +64,15 @@ async function findById(id: number) {
 }
 
 async function findByUserId(userId: number) {
-  const selectQuery = `SELECT * FROM community WHERE user_id=?`;
+  const selectQuery = `
+    SELECT id, user_id, subcategory_id, title, content, \`like\`,
+    (SELECT COUNT(*) FROM comment c WHERE c.community_id = com.id) comments_count
+    FROM community com
+    WHERE user_id=?
+  `;
   try {
-    const [[result], field] = await connection.query<[CommuntiyRow]>(selectQuery, [userId]);
-    return communityRowToCommunity(result);
+    const [[result], field] = await connection.query<[CommuntiyResponseRow]>(selectQuery, [userId]);
+    return communityResponseRowToCommunityResponse(result);
   } catch (err) {
     console.log(err);
     return undefined;
@@ -47,7 +81,9 @@ async function findByUserId(userId: number) {
 
 async function findByCategoryId(categoryId: number, pageSize: number, pageNumber: number) {
   const selectQuery = `
-    SELECT com.* FROM community com 
+    SELECT id, user_id, subcategory_id, title, content, \`like\`,
+    (SELECT COUNT(*) FROM comment c WHERE c.community_id = com.id) comments_count
+    FROM community com 
     INNER JOIN subcategory sub ON com.subcategory_id=sub.id 
     INNER JOIN category cat ON sub.category_id=cat.id
     WHERE cat.id = ?
@@ -55,8 +91,8 @@ async function findByCategoryId(categoryId: number, pageSize: number, pageNumber
   `;
   const selectParam = [categoryId, (pageNumber - 1) * pageSize, pageSize];
   try {
-    const [result, field] = await connection.query<[CommuntiyRow]>(selectQuery, selectParam);
-    return result.map((value) => communityRowToCommunity(value));
+    const [result, field] = await connection.query<[CommuntiyResponseRow]>(selectQuery, selectParam);
+    return result.map((value) => communityResponseRowToCommunityResponse(value));
   } catch (err) {
     console.log(err);
     return undefined;
@@ -64,11 +100,17 @@ async function findByCategoryId(categoryId: number, pageSize: number, pageNumber
 }
 
 async function findBySubCategoryId(subcategoryId: number, pageSize: number, pageNumber: number) {
-  const selectQuery = `SELECT * FROM community WHERE subcategory_id=? LIMIT ?, ?`;
+  const selectQuery = `
+    SELECT id, user_id, subcategory_id, title, content, \`like\`,
+    (SELECT COUNT(*) FROM comment c WHERE c.community_id = com.id) comments_count
+    FROM community com
+    WHERE subcategory_id=? 
+    LIMIT ?, ?
+  `;
   const selectParam = [subcategoryId, (pageNumber - 1) * pageSize, pageSize];
   try {
-    const [result, field] = await connection.query<[CommuntiyRow]>(selectQuery, [selectParam]);
-    return result.map((value) => communityRowToCommunity(value));
+    const [result, field] = await connection.query<[CommuntiyResponseRow]>(selectQuery, [selectParam]);
+    return result.map((value) => communityResponseRowToCommunityResponse(value));
   } catch (err) {
     console.log(err);
     return undefined;
@@ -114,6 +156,7 @@ async function update(community: CommunityUpdate) {
 
 const communityRepository = {
   save,
+  findAllByPage,
   findById,
   deleteById,
   update,

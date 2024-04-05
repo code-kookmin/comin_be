@@ -1,21 +1,34 @@
 import express from "express";
+import bcrypt from "bcrypt";
 import { User, isUser } from "../domain/user";
 import UserService from "../service/user";
 import CommunityService from "../service/community";
 import CommentService from "../service/comment";
 import { authChecker } from "../util/authChecker";
 import { Role, numberToRole, roleToNumber } from "../domain/role";
+import { getHashedPassword } from "../util/hashPassword";
+import { parse } from "path";
 
 const route = express.Router();
 const userService = new UserService();
 const communityService = new CommunityService();
 const commentService = new CommentService();
 
-route.get("/login", async (req, res) => {
-  if (typeof req.query.email != "string" || typeof req.query.passWord != "string") return res.sendStatus(400);
+route.get("/", async (req, res) => {
+  const pageSize = req.query.pageSize ? req.query.pageSize : 20;
+  const pageNumber = req.query.pageNumber ? req.query.pageNumber : 1;
+  const result = await userService.findAllByPage(parseInt(pageSize as string), parseInt(pageNumber as string));
+  if (!result) return res.sendStatus(400);
+  return res.send(result);
+});
 
-  const user = await userService.findByEmail(req.query.email);
-  if (user?.password != req.query.passWord) return res.sendStatus(400);
+route.get("/login", async (req, res) => {
+  if (typeof req.query.accountName != "string" || typeof req.query.passWord != "string") return res.sendStatus(400);
+
+  const user = await userService.findByAccountName(req.query.accountName);
+  if (!user) return res.sendStatus(400);
+  const isPasswordSame = await bcrypt.compare(req.query.passWord, user.password);
+  if (!isPasswordSame || user.accountName !== req.query.accountName) return res.sendStatus(400);
 
   if (!req.session.user) {
     req.session.user = user;
@@ -24,7 +37,7 @@ route.get("/login", async (req, res) => {
 });
 
 route.post("/signin", async (req, res) => {
-  const user = req.body;
+  const user: User = req.body;
   if (!authChecker.checkSaveUserAuth(req)) return res.sendStatus(400);
   const queryResult: User | undefined = await userService.save(user);
   if (queryResult) {
@@ -46,8 +59,8 @@ route.get("/logout", async (req, res) => {
 
 // 비밀번호 조회
 route.get("/password", async (req, res) => {
-  const email = req.query.email as string;
-  const result = await userService.findPassword(email);
+  const accountName = req.query.accountName as string;
+  const result = await userService.findPassword(accountName);
   if (!result) return res.sendStatus(400);
   return res.send(result);
 });

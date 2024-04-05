@@ -2,17 +2,22 @@ import { Tspec } from "tspec";
 
 export interface User {
   id: number;
+  accountName: string;
   email: string;
   password: string;
   name: string;
   birthday: string;
   githubName: string;
   baekjoonName: string;
+  profileImage?: string;
   role?: number;
+  organization?: string;
+  statusMsg?: string;
 }
 
 export function isUserCreate(obj: any): obj is User {
   if (
+    typeof obj.accountName !== "string" ||
     typeof obj.email !== "string" ||
     typeof obj.password !== "string" ||
     typeof obj.name !== "string" ||
@@ -28,6 +33,7 @@ export function isUserCreate(obj: any): obj is User {
 export function isUser(obj: any): obj is User {
   if (
     typeof obj.id !== "number" ||
+    typeof obj.accountName !== "string" ||
     typeof obj.email !== "string" ||
     typeof obj.password !== "string" ||
     typeof obj.name !== "string" ||
@@ -44,10 +50,17 @@ export function isUser(obj: any): obj is User {
 export type userApiTspec = Tspec.DefineApiSpec<{
   tags: ["User"];
   paths: {
+    "/user": {
+      get: {
+        summary: "사용자 전체 조회";
+        query: { pageSize?: number; pageNumber?: number };
+        responses: { 200: User };
+      };
+    };
     "/user/login": {
       get: {
         summary: "사용자 로그인 로그인 상태의 유저면 req.session.user 로 유저 객체 가져올 수 있음";
-        query: { email: string; passWord: string };
+        query: { accountName: string; passWord: string };
         responses: { 200: string };
       };
     };
@@ -67,7 +80,7 @@ export type userApiTspec = Tspec.DefineApiSpec<{
     "/user/password": {
       get: {
         summary: "사용자 비밀번호 조회";
-        query: { email: string };
+        query: { accountName: string };
         responses: { 200: string };
       };
     };
